@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System;
 using System.Collections.Generic;
@@ -58,7 +58,7 @@ namespace Ekko
             ComboMenu.Add(new MenuBool("CW", "Use [W] Combo"));
             ComboMenu.Add(new MenuBool("CW2", "Use [W] No Prediction", false));
             ComboMenu.Add(new MenuBool("CE", "Use [E] Combo"));
-            ComboMenu.Add(new MenuList("EMode", "Combo Mode:", new[] { "E To Target", "E To Mouse" }) {Index = 0});
+            ComboMenu.Add(new MenuList("EMode", "Combo Mode:", new[] { "E To Target", "E To Mouse" }) { Index = 0 });
             ComboMenu.Add(new MenuKeyBind("CTurret", "Don't Use [E] UnderTurret", System.Windows.Forms.Keys.T, KeyBindType.Toggle));
             MenuEkko.Add(ComboMenu);
             Ulti = new Menu("Ulti Settings", "Ulti");
@@ -405,7 +405,7 @@ namespace Ekko
 
             if (target != null)
             {
-                if (useQ && Q.CanCast(target))
+                if (useQ && Q.CanCast(target) && Q.IsReady())
                 {
                     var Qpred = Q.GetPrediction(target);
                     if (Qpred.Hitchance >= HitChance.High)
@@ -414,7 +414,7 @@ namespace Ekko
                     }
                 }
 
-                if (useW && W.CanCast(target))
+                if (useW && W.CanCast(target) && W.IsReady())
                 {
                     if (useW2)
                     {
@@ -442,7 +442,7 @@ namespace Ekko
                                 {
                                     Orbwalker.ResetAutoAttackTimer();
                                     //Core.DelayAction(() => EloBuddy.Player.IssueOrder(GameObjectOrder.AttackUnit, target), 500);
-                                   Player.IssueOrder(GameObjectOrder.AttackUnit, target);
+                                    Player.IssueOrder(GameObjectOrder.AttackUnit, target);
                                     return;
                                 }
 
@@ -464,7 +464,7 @@ namespace Ekko
                             {
                                 if (!UnderTuret(target))
                                 {
-                                    if (Player.CastSpell(SpellSlot.E, Game.CursorPosCenter));
+                                    if (Player.CastSpell(SpellSlot.E, Game.CursorPosCenter)) ;
                                     {
                                         Orbwalker.ResetAutoAttackTimer();
                                         Player.IssueOrder(GameObjectOrder.AttackUnit, target);
@@ -500,18 +500,18 @@ namespace Ekko
             var quang = W.GetLineFarmLocation(minionQ, Q.Width);
             if (quang.Position.IsValid())
                 if (Player.Instance.ManaPercent <= mana)
-            {
-                return;
-            }
+                {
+                    return;
+                }
 
             foreach (var minion in minionQ)
             {
-                if (useQ && Q.CanCast(minion) && quang.MinionsHit >= Minq)
+                if (useQ && Q.CanCast(minion) && quang.MinionsHit >= Minq && Q.IsReady())
                 {
                     Q.Cast(quang.Position);
                 }
 
-                if (useE && E.CanCast(minion) && EDamage(minion) + Player.Instance.GetAutoAttackDamage(minion) >= minion.Health)
+                if (useE && E.IsReady() && E.CanCast(minion) && EDamage(minion) + Player.Instance.GetAutoAttackDamage(minion) >= minion.Health)
                 {
                     if (minion.Distance(_Player.Position) > Player.Instance.GetRealAutoAttackRange(minion))
                     {
@@ -543,17 +543,17 @@ namespace Ekko
 
             if (monster != null)
             {
-                if (useQ && Q.CanCast(monster))
+                if (useQ && Q.CanCast(monster) && Q.IsReady())
                 {
                     Q.Cast(monster.Position);
                 }
 
-                if (useW && W.IsReady() && monster.IsValidTarget(Q.Range))
+                if (useW && W.IsReady() && monster.IsValidTarget(Q.Range) && W.IsReady())
                 {
                     W.Cast(monster.Position);
                 }
 
-                if (useE && E.CanCast(monster))
+                if (useE && E.CanCast(monster) && E.IsReady())
                 {
                     if (Player.CastSpell(SpellSlot.E, monster.Position))
                     {
@@ -580,7 +580,7 @@ namespace Ekko
             var useR = Ulti["RKs"].GetValue<MenuBool>().Enabled;
             foreach (var target in Enemies)
             {
-                if (useQ && Q.CanCast(target))
+                if (useQ && Q.CanCast(target) && Q.IsReady())
                 {
                     if (QDamage(target) >= target.Health)
                     {
@@ -627,7 +627,7 @@ namespace Ekko
                 return;
             }
 
-            if (!sender.IsValidTarget(Q.Range))
+            if (!sender.IsValidTarget(Q.Range) && Q.IsReady())
             {
                 return;
             }
@@ -670,7 +670,7 @@ namespace Ekko
 
             foreach (var target in Enemies)
             {
-                if (Passive && Q.CanCast(target))
+                if (Passive && Q.CanCast(target) && Q.IsReady())
                 {
                     var Qpred = Q.GetPrediction(target);
                     if (Qpred.Hitchance >= HitChance.Medium)
@@ -681,7 +681,7 @@ namespace Ekko
             }
 
             var targetQ = TargetSelector.GetTarget(Q.Range, DamageType.Magical);
-            if (useQ && Q.CanCast(targetQ))
+            if (useQ && Q.CanCast(targetQ) && Q.IsReady())
             {
                 if (targetQ != null)
                 {
@@ -697,7 +697,7 @@ namespace Ekko
 
         private static void Gapcloser_OnGapCloser(AIHeroClient sender, Gapcloser.GapcloserArgs args)
         {
-            if (Misc["antiGap"].GetValue<MenuBool>().Enabled && sender.IsEnemy && sender.Distance(_Player.Position) <= 325)
+            if (Misc["antiGap"].GetValue<MenuBool>().Enabled && sender.IsEnemy && sender.Distance(_Player.Position) <= 325 && Q.IsReady())
             {
                 Q.Cast(sender);
             }
