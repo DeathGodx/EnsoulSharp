@@ -41,7 +41,7 @@ namespace Kassadin7
             Bootstrap.Init(null);
             Q = new Spell(SpellSlot.Q, 650);
             W = new Spell(SpellSlot.W, 350);
-            E = new Spell(SpellSlot.E ,600);
+            E = new Spell(SpellSlot.E, 600);
             R = new Spell(SpellSlot.R, 700);
             Ignite = new Spell(ObjectManager.Player.GetSpellSlot("summonerdot"), 600);
             thm = new Font(Drawing.Direct3DDevice, new FontDescription { FaceName = "Tahoma", Height = 15, Weight = FontWeight.Bold, OutputPrecision = FontPrecision.Default, Quality = FontQuality.ClearType });
@@ -105,7 +105,7 @@ namespace Kassadin7
             Misc = new Menu("Misc Settings", "Misc");
             Misc.Add(new MenuSeparator("Skin Settings", "Skin Settings"));
             Misc.Add(new MenuBool("checkSkin", "Use Skin Changer", false));
-            Misc.Add(new MenuList("skin.Id", "Skin Mode", new[] { "Default", "1", "2", "3", "4", "5" }) { Index = 0});
+            Misc.Add(new MenuList("skin.Id", "Skin Mode", new[] { "Default", "1", "2", "3", "4", "5" }) { Index = 0 });
             Misc.Add(new MenuSeparator("Drawing Settings", "Drawing Settings"));
             Misc.Add(new MenuBool("DrawR", "R Range", false));
             Misc.Add(new MenuBool("DrawQ", "Q Range"));
@@ -187,13 +187,13 @@ namespace Kassadin7
             KillSteal();
             Dtc();
 
-           /* if (_Player.SkinId != Misc["skin.Id"].GetValue<MenuList>().Index)
-            {
-                if (checkSkin())
-                {
-                    Player.SetSkinId(SkinId());
-                }
-            }*/
+            /* if (_Player.SkinId != Misc["skin.Id"].GetValue<MenuList>().Index)
+             {
+                 if (checkSkin())
+                 {
+                     Player.SetSkinId(SkinId());
+                 }
+             }*/
         }
 
         public static int SkinId()
@@ -208,7 +208,7 @@ namespace Kassadin7
 
         public static bool EReady
         {
-            get { return Player.Instance.HasBuff("ForcePulse"); }
+            get { return Player.Instance.HasBuff("ForcePulseE"); }
         }
 
         private static void Combo()
@@ -296,34 +296,34 @@ namespace Kassadin7
                            .Cast<AIBaseClient>().ToList();
             var qFarmLocation = W.GetLineFarmLocation(minionQ, E.Width);
             if (qFarmLocation.Position.IsValid())
-            foreach (var minions in minionQ)
-            {
-                if (useW && W.IsReady() && minions.IsValidTarget(275) && minions.InAutoAttackRange()
-                && Player.Instance.Distance(minions.Position) <= 225f
-                && Player.Instance.GetSpellDamage(minions, SpellSlot.W) + Player.Instance.GetAutoAttackDamage(minions)
-                >= minions.Health + minions.AllShield)
+                foreach (var minions in minionQ)
                 {
-                    W.Cast();
-                    Player.IssueOrder(GameObjectOrder.AttackUnit, minions);
-                }
+                    if (useW && W.IsReady() && minions.IsValidTarget(275) && minions.InAutoAttackRange()
+                    && Player.Instance.Distance(minions.Position) <= 225f
+                    && Player.Instance.GetSpellDamage(minions, SpellSlot.W) + Player.Instance.GetAutoAttackDamage(minions)
+                    >= minions.Health + minions.AllShield)
+                    {
+                        W.Cast();
+                        Player.IssueOrder(GameObjectOrder.AttackUnit, minions);
+                    }
 
 
-                if (Player.Instance.ManaPercent < mana) return;
-                if (useQ && Q.IsReady() && minions.IsValidTarget(Q.Range) && Player.Instance.GetSpellDamage(minions, SpellSlot.Q) > minions.Health + minions.AllShield && (_Player.Distance(minions) > 225 || !W.IsReady()))
-                {
-                    Q.Cast(minions);
-                }
+                    if (Player.Instance.ManaPercent < mana) return;
+                    if (useQ && Q.IsReady() && minions.IsValidTarget(Q.Range) && Player.Instance.GetSpellDamage(minions, SpellSlot.Q) > minions.Health + minions.AllShield && (_Player.Distance(minions) > 225 || !W.IsReady()))
+                    {
+                        Q.Cast(minions);
+                    }
 
-                if (useE && E.IsReady()  && minions.IsValidTarget(E.Range) && qFarmLocation.MinionsHit >= MinE && EReady)
-                {
-                    E.Cast(qFarmLocation.Position);
-                }
+                    if (useE && E.IsReady() && minions.IsValidTarget(E.Range) && qFarmLocation.MinionsHit >= MinE && EReady)
+                    {
+                        E.Cast(qFarmLocation.Position);
+                    }
 
-                if (useR && R.IsReady() && minions.IsValidTarget(R.Range) && !UnderTuret(minions) && Player.Instance.GetBuffCount("RiftWalk") < minRs)
-                {
-                    R.Cast(minions);
+                    if (useR && R.IsReady() && minions.IsValidTarget(R.Range) && !UnderTuret(minions) && Player.Instance.GetBuffCount("RiftWalk") < minRs)
+                    {
+                        R.Cast(minions);
+                    }
                 }
-            }
         }
 
         private static void LastHit()
@@ -482,7 +482,7 @@ namespace Kassadin7
             {
                 if (_Player.HealthPercent <= Misc["Hp"].GetValue<MenuSlider>().Value && _Player.Position.CountEnemyHeroesInRange(R.Range) >= 1)
                 {
-                    
+
                 }
             }
         }
@@ -496,7 +496,7 @@ namespace Kassadin7
             {
                 if (KsE && E.IsReady() && target.IsValidTarget(E.Range) && EReady)
                 {
-                    if (target.Health  <= Player.Instance.GetSpellDamage(target, SpellSlot.E) && EReady)
+                    if (target.Health <= Player.Instance.GetSpellDamage(target, SpellSlot.E) && EReady)
                     {
                         E.Cast(target);
                     }
@@ -512,7 +512,7 @@ namespace Kassadin7
 
                 if (KsQ && Q.IsReady() && target.IsValidTarget(Q.Range))
                 {
-                    if (target.Health  <= Player.Instance.GetSpellDamage(target, SpellSlot.Q))
+                    if (target.Health <= Player.Instance.GetSpellDamage(target, SpellSlot.Q))
                     {
                         Q.Cast(target);
                     }
