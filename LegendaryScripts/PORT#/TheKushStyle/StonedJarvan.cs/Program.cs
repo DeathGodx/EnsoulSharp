@@ -50,8 +50,8 @@ namespace StonedJarvan
             E = new Spell(SpellSlot.E, 800);
             R = new Spell(SpellSlot.R, 650);
             IgniteSlot = Player.GetSpellSlot("SummonerDot");
-            Q.SetSkillshot(0.25f, 70f, 1450f, false, SkillshotType.Line);
-            E.SetSkillshot(0.5f, 175f, int.MaxValue, false, SkillshotType.Circle);
+            Q.SetSkillshot(0.25f, 70f, 1450f, false,false, SkillshotType.Line);
+            E.SetSkillshot(0.5f, 175f, int.MaxValue, false,false, SkillshotType.Circle);
             SpellList.Add(Q);
             SpellList.Add(W);
             SpellList.Add(E);
