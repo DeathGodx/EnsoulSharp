@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System;
 using System.Collections.Generic;
@@ -47,56 +47,57 @@ namespace KarthusSharp
 
         private bool _comboE;
 
-       // private static Orbwalking.Orbwalker Orbwalker;
+        // private static Orbwalking.Orbwalker Orbwalker;
 
         public Karthus()
         {
             if (ObjectManager.Player.CharacterName != "Karthus")
                 return;
 
-            _menu = new Menu("KarthusSharp", "KarthusSharp",true);
 
+            var MenuKart = new Menu("KarthusSharp", "KarthusSharp", true);
             var targetSelectorMenu = new Menu("Target Selector", "TargetSelector");
             TargetSelector.GetTarget(targetSelectorMenu);
             _menu.Add(targetSelectorMenu);
 
-            //Orbwalker = new Orbwalking.Orbwalker(_menu.Add(new Menu("Orbwalking", "Orbwalking")));
+            //Orbwalker = new Orbwalking.Orbwalker(new Menu("Orbwalking", "Orbwalking")));
 
-            var comboMenu = _menu.Add(new Menu("Combo", "Combo"));
+            var comboMenu = new Menu("Combo", "Combo");
             comboMenu.Add(new MenuBool("comboQ", "Use Q"));
             comboMenu.Add(new MenuBool("comboW", "Use W"));
             comboMenu.Add(new MenuBool("comboE", "Use E"));
             comboMenu.Add(new MenuBool("comboAA", "Use AA"));
-            comboMenu.Add(new MenuSlider("comboWPercent", "Use W until Mana %",10));
-            comboMenu.Add(new MenuSlider("comboEPercent", "Use E until Mana %",15));
+            comboMenu.Add(new MenuSlider("comboWPercent", "Use W until Mana %", 10));
+            comboMenu.Add(new MenuSlider("comboEPercent", "Use E until Mana %", 15));
             comboMenu.Add(new MenuBool("comboMove", "Orbwalk/Move"));
-
-            var harassMenu = _menu.Add(new Menu("Harass", "Harass"));
+            MenuKart.Add(comboMenu);
+            var harassMenu = new Menu("Harass", "Harass");
             harassMenu.Add(new MenuBool("harassQ", "Use Q"));
-            harassMenu.Add(new MenuSlider("harassQPercent", "Use Q until Mana %",15));
+            harassMenu.Add(new MenuSlider("harassQPercent", "Use Q until Mana %", 15));
             harassMenu.Add(new MenuBool("harassQLasthit", "Prioritize Last Hit"));
             harassMenu.Add(new MenuBool("harassMove", "Orbwalk/Move"));
-
-            var farmMenu = _menu.Add(new Menu("Farming", "Farming"));
-            farmMenu.Add(new MenuList("farmQ", "Use Q", new[] { "Last Hit", "Lane Clear", "Both", "No" }){Index = 0 });
+            MenuKart.Add(harassMenu);
+            var farmMenu = new Menu("Farming", "Farming");
+            farmMenu.Add(new MenuList("farmQ", "Use Q", new[] { "Last Hit", "Lane Clear", "Both", "No" }) { Index = 0 });
             farmMenu.Add(new MenuBool("farmE", "Use E in Lane Clear"));
             farmMenu.Add(new MenuBool("farmAA", "Use AA in Lane Clear"));
-            farmMenu.Add(new MenuSlider("farmQPercent", "Use Q until Mana %",0,10,100));
+            farmMenu.Add(new MenuSlider("farmQPercent", "Use Q until Mana %", 0, 10, 100));
             farmMenu.Add(new MenuSlider("farmEPercent", "Use E until Mana %", 0, 20, 100));
             farmMenu.Add(new MenuBool("farmMove", "Orbwalk/Move"));
-
-            var notifyMenu = _menu.Add(new Menu("Notify on R killable enemies", "Notify"));
+            MenuKart.Add(farmMenu);
+            var notifyMenu = new Menu("Notify on R killable enemies", "Notify");
             notifyMenu.Add(new MenuBool("notifyR", "Text Notify"));
             notifyMenu.Add(new MenuBool("notifyPing", "Ping Notify"));
-
-            var drawMenu = _menu.Add(new Menu("Drawing", "Drawing"));
+            MenuKart.Add(notifyMenu);
+            var drawMenu = new Menu("Drawing", "Drawing");
             drawMenu.Add(new MenuBool("drawQ", "Draw Q range"));
-
-            var miscMenu = _menu.Add(new Menu("Misc", "Misc"));
+            MenuKart.Add(drawMenu);
+            var miscMenu = new Menu("Misc", "Misc");
             miscMenu.Add(new MenuBool("ultKS", "Ultimate KS"));
             miscMenu.Add(new MenuBool("autoCast", "Auto Combo/LaneClear if dead"));
             miscMenu.Add(new MenuBool("packetCast", "Packet Cast"));
-
+            MenuKart.Add(miscMenu);
+            MenuKart.Attach();
             _spellQ = new Spell(SpellSlot.Q, 875);
             _spellW = new Spell(SpellSlot.W, 1000);
             _spellE = new Spell(SpellSlot.E, 505);
@@ -121,28 +122,28 @@ namespace KarthusSharp
             switch (Orbwalker.ActiveMode)
             {
                 case OrbwalkerMode.Combo:
-                    Orbwalker.AttackState =(_menu["comboAA"].GetValue<MenuBool>() || ObjectManager.Player.Mana < 100); //if no mana, allow auto attacks!
-                    Orbwalker.MovementState =(_menu["comboMove"].GetValue<MenuBool>());
+                    Orbwalker.AttackState = (_menu["comboAA"].GetValue<MenuBool>() || ObjectManager.Player.Mana < 100); //if no mana, allow auto attacks!
+                    Orbwalker.MovementState = (_menu["comboMove"].GetValue<MenuBool>());
                     Combo();
                     break;
                 case OrbwalkerMode.Harass:
-                    Orbwalker.AttackState =(true);
-                    Orbwalker.MovementState =(_menu["harassMove"].GetValue<MenuBool>());
+                    Orbwalker.AttackState = (true);
+                    Orbwalker.MovementState = (_menu["harassMove"].GetValue<MenuBool>());
                     Harass();
                     break;
                 case OrbwalkerMode.LaneClear:
-                    Orbwalker.AttackState =(_menu["farmAA"].GetValue<MenuBool>() || ObjectManager.Player.Mana < 100);
-                    Orbwalker.MovementState =(_menu["farmMove"].GetValue<MenuBool>());
+                    Orbwalker.AttackState = (_menu["farmAA"].GetValue<MenuBool>() || ObjectManager.Player.Mana < 100);
+                    Orbwalker.MovementState = (_menu["farmMove"].GetValue<MenuBool>());
                     LaneClear();
                     break;
                 case OrbwalkerMode.LastHit:
-                    Orbwalker.AttackState =(true);
-                    Orbwalker.MovementState =(_menu["farmMove"].GetValue<MenuBool>());
+                    Orbwalker.AttackState = (true);
+                    Orbwalker.MovementState = (_menu["farmMove"].GetValue<MenuBool>());
                     LastHit();
                     break;
                 default:
-                    Orbwalker.AttackState =(true);
-                    Orbwalker.MovementState =(true);
+                    Orbwalker.AttackState = (true);
+                    Orbwalker.MovementState = (true);
                     RegulateEState();
 
                     if (_menu["autoCast"].GetValue<MenuBool>())
@@ -278,7 +279,7 @@ namespace KarthusSharp
                 return;
             var minions = GameObjects.EnemyMinions.Where(e => e.IsValidTarget(_spellQ.Range) && e.IsMinion())
                            .Cast<AIBaseClient>().ToList();
-var miniond = GameObjects.EnemyMinions.Where(m => m.IsValidTarget(_spellQ.Range)).OrderBy(m => m.Health).FirstOrDefault();
+            var miniond = GameObjects.EnemyMinions.Where(m => m.IsValidTarget(_spellQ.Range)).OrderBy(m => m.Health).FirstOrDefault();
             minions.RemoveAll(x => x.MaxHealth <= 5); //filter wards the ghetto method lel
 
             /*foreach (var minion in minions.Where(x => ObjectManager.Player.GetSpellDamage(x, SpellSlot.Q, 1) >= //FirstDamage = multitarget hit, differentiate! (check radius around mob predicted pos)
