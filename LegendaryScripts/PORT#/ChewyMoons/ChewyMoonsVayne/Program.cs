@@ -365,7 +365,7 @@ namespace ChewyVayne
             E = new Spell(SpellSlot.E, 550);
             R = new Spell(SpellSlot.R);
 
-            E.SetTargetted(0.25f, 1200);
+            //E.SetTargetted(0.25f, 1200);
 
             CreateMenu();
             Chat.Print("CHEWY MOON VAYNE PORTED BY DEATHGOD");
