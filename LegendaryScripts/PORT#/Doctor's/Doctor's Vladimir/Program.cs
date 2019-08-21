@@ -41,7 +41,7 @@ namespace Vladimir
             W = new Spell(SpellSlot.W);
             E = new Spell(SpellSlot.E, 600);
             R = new Spell(SpellSlot.R, 700);
-            R.SetSkillshot(250, 1200, 150, false, SkillshotType.Circle);
+            R.SetSkillshot(250, 1200, 150, false,false, SkillshotType.Circle);
             Ignite = new Spell(ObjectManager.Player.GetSpellSlot("summonerdot"), 600);
             Thn = new Font(Drawing.Direct3DDevice, new FontDescription { FaceName = "Tahoma", Height = 15, Weight = FontWeight.Bold, OutputPrecision = FontPrecision.Default, Quality = FontQuality.ClearType });
             var MenuVlad = new Menu("Doctor's Vladimir", "Vladimir", true);
