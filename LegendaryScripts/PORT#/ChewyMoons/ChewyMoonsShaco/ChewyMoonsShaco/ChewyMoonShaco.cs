@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System;
 using System.Collections.Generic;
@@ -22,7 +22,8 @@ namespace ChewyMoonsShaco
         public static Spell E;
         public static Spell R;
         public static Menu Menu;
-       // public static Orbwalking.Orbwalker Orbwalker;
+        public static Menu illuminatiMenu, comboMenu, drawingMenu, escapeMenu, ActivatorMenu, harassMenu, miscMenu, AntiSpellMenu, LastHitM, ksMenu;
+        // public static Orbwalking.Orbwalker Orbwalker;
         public static List<Spell> SpellList;
         public static Items.Item Tiamat;
         public static Items.Item Hydra;
@@ -47,7 +48,7 @@ namespace ChewyMoonsShaco
             //Hydra = ItemData.Ravenous_Hydra_Melee_Only.GetItem();
             Game.OnUpdate += GameOnOnGameUpdate;
             Drawing.OnDraw += Drawing_OnDraw;
-            Orbwalker.OnAction += OrbwalkingOnAfterAttack;
+            //Orbwalker.OnAction += OrbwalkingOnAfterAttack;
             Chat.Print("<font color=\"#6699ff\"><b>ChewyMoon's Shaco: PORTED By DEATHGODX</b></font> <font color=\"#FFFFFF\">" + "loaded!" +"</font>");
             AIBaseClient.OnProcessSpellCast += AIBaseClient_OnProcessSpellCast;
         }
@@ -55,7 +56,7 @@ namespace ChewyMoonsShaco
 
         static void AIBaseClient_OnProcessSpellCast(AIBaseClient sender, AIBaseClientProcessSpellCastEventArgs args)
         {
-            if (!Menu["Evade"].GetValue<MenuBool>().Enabled) return;
+            if (!escapeMenu["Evade"].GetValue<MenuBool>().Enabled) return;
             if (sender.IsAlly) return;
             //Need to calc Delay/Time for misille to hit !
 
@@ -119,7 +120,7 @@ namespace ChewyMoonsShaco
             Menu.Add(orbwalkingMenu);
 
             // Combo
-            var comboMenu = new Menu("Combo", "cmShacoCombo");
+            comboMenu = new Menu("Combo", "cmShacoCombo");
             comboMenu.Add(new MenuBool("useQ", "Use Q"));
             comboMenu.Add(new MenuBool("useW", "Use W"));
             comboMenu.Add(new MenuBool("useE", "Use E"));
@@ -134,18 +135,18 @@ namespace ChewyMoonsShaco
             Menu.Add(harassMenu);
 
             // Ks
-            var ksMenu = new Menu("KS", "cmShacoKS");
+            ksMenu = new Menu("KS", "cmShacoKS");
             ksMenu.Add(new MenuBool("ksE", "Use E"));
             Menu.Add(ksMenu);
 
             //Escape
-            var escapeMenu = new Menu("Escape", "esc");
+            escapeMenu = new Menu("Escape", "esc");
             escapeMenu.Add(new MenuKeyBind("Escape", "Escape", System.Windows.Forms.Keys.Z, KeyBindType.Press));
             escapeMenu.Add(new MenuKeyBind("EscapeR", "Escape With Ultimate",System.Windows.Forms.Keys.X, KeyBindType.Press));
             escapeMenu.Add(new MenuBool("Evade", "Evade With Ultimate"));
             Menu.Add(escapeMenu);
             // ILLUMINATI
-            var illuminatiMenu = new Menu("Illuminati", "cmShacoTriangleIlluminatiSp00ky");
+            illuminatiMenu = new Menu("Illuminati", "cmShacoTriangleIlluminatiSp00ky");
             illuminatiMenu.Add(new MenuKeyBind("PlaceBox", "Place Box", System.Windows.Forms.Keys.C, KeyBindType.Press));
             illuminatiMenu.Add(new MenuBool("RepairTriangle", "Repair Triangle & Auto Form Triangle"));
             illuminatiMenu.Add(new MenuSlider("BoxDistance", "Box Distance", 600, 101, 1200));
@@ -155,7 +156,7 @@ namespace ChewyMoonsShaco
                 };*/
             Menu.Add(illuminatiMenu);
             // Drawing
-            var drawingMenu = new Menu("Drawings", "cmShacoDrawing");
+            drawingMenu = new Menu("Drawings", "cmShacoDrawing");
             drawingMenu.Add(new MenuBool("drawQ", "Draw Q"));
             drawingMenu.Add(new MenuBool("drawQPos", "Draw Q Pos"));
             drawingMenu.Add(new MenuBool("drawW", "Draw W"));
@@ -163,7 +164,7 @@ namespace ChewyMoonsShaco
             Menu.Add(drawingMenu);
 
             // Misc
-            var miscMenu = new Menu("Misc", "cmShacoMisc");
+            miscMenu = new Menu("Misc", "cmShacoMisc");
             miscMenu.Add(new MenuBool("usePackets", "Use packets"));
             miscMenu.Add(new MenuBool("stuff", "Let me know of any"));
             miscMenu.Add(new MenuBool("stuff2", "other misc features you want"));
@@ -175,10 +176,10 @@ namespace ChewyMoonsShaco
 
         private static void Drawing_OnDraw(EventArgs args)
         {
-            var qCircle = Menu["drawQ"].GetValue<MenuBool>().Enabled;
-            var wCircle = Menu["drawW"].GetValue<MenuBool>().Enabled;
-            var eCircle = Menu["drawE"].GetValue<MenuBool>().Enabled;
-            var qPosCircle = Menu["drawQPos"].GetValue<MenuBool>().Enabled;
+            var qCircle = drawingMenu["drawQ"].GetValue<MenuBool>().Enabled;
+            var wCircle = drawingMenu["drawW"].GetValue<MenuBool>().Enabled;
+            var eCircle = drawingMenu["drawE"].GetValue<MenuBool>().Enabled;
+            var qPosCircle = drawingMenu["drawQPos"].GetValue<MenuBool>().Enabled;
 
             var pos = player.Position;
 
@@ -210,7 +211,7 @@ namespace ChewyMoonsShaco
 
         private static void GameOnOnGameUpdate(EventArgs args)
         {
-            if (Menu["EscapeR"].GetValue<MenuKeyBind>().Active)
+            if (escapeMenu["EscapeR"].GetValue<MenuKeyBind>().Active)
             {
                 if (R.IsReady() && Q.IsReady())
                 {
@@ -219,18 +220,18 @@ namespace ChewyMoonsShaco
                 Escape();
             }
 
-            if (Menu["Escape"].GetValue<MenuKeyBind>().Active)
+            if (escapeMenu["Escape"].GetValue<MenuKeyBind>().Active)
             {
                 Escape();
             }
 
 
-            if (Menu["ksE"].GetValue<MenuBool>().Enabled)
+            if (ksMenu["ksE"].GetValue<MenuBool>().Enabled)
             {
                 KillSecure();
             }
 
-            if (Menu["PlaceBox"].GetValue<MenuKeyBind>().Active)
+            if (illuminatiMenu["PlaceBox"].GetValue<MenuKeyBind>().Active)
             {
                 Illuminati.PlaceInitialBox();
             }
@@ -291,7 +292,7 @@ namespace ChewyMoonsShaco
                     .Where(x => x.Distance(player) <= E.Range)
                     .Where(target => player.GetSpellDamage(target, SpellSlot.E) > target.Health))
             {
-                E.CastOnUnit(target, Menu["usePackets"].GetValue<MenuBool>().Enabled);
+                E.CastOnUnit(target, miscMenu["usePackets"].GetValue<MenuBool>().Enabled);
                 return;
             }
         }
@@ -299,11 +300,10 @@ namespace ChewyMoonsShaco
         private static void Combo()
         {
             var target = TargetSelector.GetTarget(E.Range, DamageType.Physical);
-
-            var useQ = Menu["useQ"].GetValue<MenuBool>().Enabled;
-            var useW = Menu["useW"].GetValue<MenuBool>().Enabled;
-            var useE = Menu["useE"].GetValue<MenuBool>().Enabled;
-            var packets = Menu["usePackets"].GetValue<MenuBool>().Enabled;
+            var useQ = comboMenu["useQ"].GetValue<MenuBool>().Enabled;
+            var useW = comboMenu["useW"].GetValue<MenuBool>().Enabled;
+            var useE = comboMenu["useE"].GetValue<MenuBool>().Enabled;
+            var packets = miscMenu["usePackets"].GetValue<MenuBool>().Enabled;
 
             foreach (var spell in SpellList.Where(x => x.IsReady()))
             {
@@ -321,7 +321,7 @@ namespace ChewyMoonsShaco
 
                 if (target != null)
                     if (spell.Slot == SpellSlot.R && target.IsValidTarget() && player.Distance(target) < 400 &&
-                        player.HasBuff("Deceive") && Menu["useR"].GetValue<MenuBool>().Enabled)
+                        player.HasBuff("Deceive") && comboMenu["useR"].GetValue<MenuBool>().Enabled)
                     {
                         R.Cast();
                     }
@@ -350,30 +350,13 @@ namespace ChewyMoonsShaco
                 E.CastOnUnit(target);
             }
 
-            if (!Menu["cloneOrb"].GetValue<MenuBool>().Enabled) return;
-            //if (!hasClone()) return;
-            AIBaseClient clone = getClone();
 
-            if (Environment.TickCount > cloneAct + 200)
-            {
-                if (target != null)
-                {
-                    if (clone.IsWindingUp)
-                        return;
-                    R.Cast(target);
-                }
-                else
-                {
-                    R.Cast(Game.CursorPosRaw);
-                }
-                cloneAct = Environment.TickCount;
-            }
 
         }
 
         private static void Harass()
         {
-            var useE = Menu["useEHarass"].GetValue<MenuBool>().Enabled;
+            var useE = harassMenu["useEHarass"].GetValue<MenuBool>().Enabled;
             var target = TargetSelector.GetTarget(E.Range, DamageType.Magical);
 
             if (!target.IsValidTarget(E.Range))
