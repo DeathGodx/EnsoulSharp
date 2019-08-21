@@ -50,7 +50,7 @@ namespace Sejuani7
             R = new Spell(SpellSlot.R, 1200);// SkillShotType.Linear, );
             R.SetSkillshot(250, 1600, 110, false,false, SkillshotType.Line);
             F = new Spell(_Player.GetSpellSlot("summonerflash"), 425);//, SkillShotType.Linear, 0, int.MaxValue, 60);
-            F.SetSkillshot(0, int.MaxValue, 60, false, SkillshotType.Line);
+            F.SetSkillshot(0, int.MaxValue, 60, false, false, SkillshotType.Line);
             //F.AllowedCollisionCount = int.MaxValue;
             Thm = new Font(Drawing.Direct3DDevice, new FontDescription { FaceName = "Tahoma", Height = 32, Weight = FontWeight.Bold, OutputPrecision = FontPrecision.Default, Quality = FontQuality.ClearType });
             Thn = new Font(Drawing.Direct3DDevice, new FontDescription { FaceName = "Tahoma", Height = 20, Weight = FontWeight.Bold, OutputPrecision = FontPrecision.Default, Quality = FontQuality.ClearType });
