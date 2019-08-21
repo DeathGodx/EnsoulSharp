@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System;
 using System.Collections.Generic;
@@ -94,6 +94,7 @@ namespace yol0Riven
             Misc.Add(new MenuBool("interrupt", "Auto W Interruptible Spells"));
             Misc.Add(new MenuBool("keepalive", "Keep Q Alive"));
             MenuRiven.Add(Misc);
+            Drawmenu = new Menu("Draw Settings", "Draw");
             Drawmenu.Add(new MenuBool("drawRange", "Draw Engage Range"));
             Drawmenu.Add(new MenuBool("drawTarget", "Draw Current Target"));
             Drawmenu.Add(new MenuBool("drawDamage", "Draw Damage on Healthbar"));
@@ -107,8 +108,8 @@ namespace yol0Riven
             //TargetSelector.AddToMenu(_menu.SubMenu("Target Selector"));
             //Utility.HpBarDamageIndicator.DamageToUnit = GetDamage;
 
-            _R.SetSkillshot(0.25f, 60f, 2200, false,false, SkillshotType.Cone);
-            _E.SetSkillshot(0, 0, 1450, false,false, SkillshotType.Line);
+            _R.SetSkillshot(0.25f, 60f, 2200, false, false, SkillshotType.Cone);
+            _E.SetSkillshot(0, 0, 1450, false, false, SkillshotType.Line);
 
             Game.OnUpdate += OnUpdate;
             Orbwalker.OnAction += BeforeAttack;
@@ -184,10 +185,10 @@ namespace yol0Riven
 
         private static void AfterAttack(Object unit, OrbwalkerActionArgs target)
         {
-            if (Orbwalker.ActiveMode == OrbwalkerMode.Combo && nextSpell == _Q)
+            if (_target.IsValidTarget(_Q.Range) && _Q.IsReady())
             {
                 _Q.Cast(_target.Position);
-                nextSpell = null;
+                
             }
         }
 
@@ -198,8 +199,7 @@ namespace yol0Riven
             KillSecure();
             if (Orbwalker.ActiveMode != OrbwalkerMode.Combo)
                 AutoStun();
-            if (Drawmenu["Flee"].GetValue<MenuKeyBind>().Active)
-                Flee();
+
 
             if (_target == null)
                 Orbwalker.MovementState = true;
@@ -272,7 +272,7 @@ namespace yol0Riven
 
         private static void Combo(AIHeroClient target)
         {
-            Orbwalker.MovementState = false;
+            
             var noRComboDmg = DamageCalcNoR(target);
             if (_R.IsReady() && !ultiReady && noRComboDmg < target.Health &&
                ComboMenu["useR"].GetValue<MenuBool>().Enabled)
@@ -300,7 +300,7 @@ namespace yol0Riven
             if (nextSpell == null && UseAttack)
             {
                 Orbwalker.LastAutoAttackTick = Variables.GameTimeTickCount + Game.Ping / 2;
-                Orbwalker.MovementState = false;
+                
                 Player.IssueOrder(GameObjectOrder.AttackUnit, target);
                 return;
             }
@@ -311,19 +311,19 @@ namespace yol0Riven
                     return;
 
                 _Q.Cast(target.Position);
-                nextSpell = null;
+                
             }
 
             if (nextSpell == _W)
             {
                 _W.Cast();
-                nextSpell = null;
+                
             }
 
             if (nextSpell == _E)
             {
                 _E.Cast(target.Position);
-                nextSpell = null;
+                
             }
         }
 
@@ -346,7 +346,7 @@ namespace yol0Riven
         private static void OnDraw(EventArgs args)
         {
             if (Drawmenu["drawRange"].GetValue<MenuBool>().Enabled)
-            Render.Circle.DrawCircle(ObjectManager.Player.Position, _Q.Range, Color.Orange, 1);
+                Render.Circle.DrawCircle(ObjectManager.Player.Position, _Q.Range, Color.Orange, 1);
             Render.Circle.DrawCircle(ObjectManager.Player.Position, _E.Range, Color.Orange, 1);
             Render.Circle.DrawCircle(ObjectManager.Player.Position, _W.Range, Color.Orange, 1);
             Render.Circle.DrawCircle(ObjectManager.Player.Position, _R.Range, Color.Orange, 1);
@@ -372,12 +372,12 @@ namespace yol0Riven
             {
                 if (_Tiamat.IsReady)
                 {
-                    nextSpell = null;
+                    
                     UseTiamat = true;
                 }
                 else if (_Hydra.IsReady)
                 {
-                    nextSpell = null;
+                    
                     UseTiamat = true;
                 }
                 else if (_W.IsReady() && _target.IsValidTarget(_W.Range) && qCount != 0)
@@ -433,24 +433,24 @@ namespace yol0Riven
                 {
                     if (_Tiamat.IsReady && _target.IsValidTarget(_Tiamat.Range))
                     {
-                        nextSpell = null;
+                        
                         UseTiamat = true;
                     }
                     else if (_Hydra.IsReady && _target.IsValidTarget(_Hydra.Range))
                     {
-                        nextSpell = null;
+                        
                         UseTiamat = true;
                     }
                 }
                 else if (spellname == "RivenTriCleave")
                 {
                     var target = TargetSelector.GetTarget(600);
-                    nextSpell = null;
+                    
                     DelayAction.Add(125 + Game.Ping / 2, CancelAnimation);
 
                     if (target.InAutoAttackRange())
                     {
-                        nextSpell = null;
+                        
                         UseAttack = true;
                         return;
                     }
@@ -461,7 +461,7 @@ namespace yol0Riven
                     }
                     else
                     {
-                        nextSpell = null;
+                        
                         UseAttack = true;
                     }
                 }
@@ -476,7 +476,7 @@ namespace yol0Riven
                     }
                     else
                     {
-                        nextSpell = null;
+                        
                         UseAttack = true;
                     }
                 }
@@ -494,7 +494,7 @@ namespace yol0Riven
                     if ((_Tiamat.IsReady && _target.IsValidTarget(_Tiamat.Range)) ||
                         (_Hydra.IsReady && _target.IsValidTarget(_Hydra.Range)))
                     {
-                        nextSpell = null;
+                        
                         UseTiamat = true;
                     }
                     else if (_Q.IsReady() && _target.IsValidTarget(_Q.Range))
@@ -512,7 +512,7 @@ namespace yol0Riven
         private static void GapClose(AIHeroClient target)
         {
             var useE = _E.IsReady();
-            var useQ = _Q.IsReady() && qCount < 2 &&ComboMenu["useQ"].GetValue<MenuBool>().Enabled;
+            var useQ = _Q.IsReady() && qCount < 2 && ComboMenu["useQ"].GetValue<MenuBool>().Enabled;
 
             if (lastGapClose + 400 > Variables.GameTimeTickCount && lastGapClose != 0)
                 return;
@@ -527,7 +527,7 @@ namespace yol0Riven
             if (distance < aRange)
                 return;
 
-            nextSpell = null;
+            
             UseTiamat = false;
             UseAttack = true;
             if (_Ghostblade.IsReady)
@@ -560,7 +560,7 @@ namespace yol0Riven
             var t = args.Target as AIMinionClient;
             if (t == null)
             {
-                Orbwalker.MovementState = false;
+                
             }
         }
 
