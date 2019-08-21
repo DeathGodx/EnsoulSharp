@@ -19,7 +19,8 @@ namespace KogMaw
 {
     internal class Program
     {
-        public static Menu Menu, ComboMenu, HarassMenu, LaneClearMenu, JungleClearMenu, KillStealMenu, Misc;
+        public static Item Botrk;
+        public static Menu Menu, ComboMenu, HarassMenu, LaneClearMenu, JungleClearMenu, KillStealMenu, Misc, Items;
         public static AIHeroClient _Player
         {
             get { return ObjectManager.Player; }
@@ -41,10 +42,13 @@ namespace KogMaw
             Chat.Print("Doctor's KogMaw Loaded!", Color.Orange);
             Bootstrap.Init(null);
             Q = new Spell(SpellSlot.Q, 1000);
-            Q.SetSkillshot(250, 1650, 70, false, false, SkillshotType.Line);
             W = new Spell(SpellSlot.W, (uint)Player.Instance.GetRealAutoAttackRange());
             E = new Spell(SpellSlot.E, 1200);
             R = new Spell(SpellSlot.R, 900 + 300 * (uint)Player.Instance.Spellbook.GetSpell(SpellSlot.R).Level);
+            Q.SetSkillshot(0.25f, 50f, 2000f, true, false, SkillshotType.Line);
+            E.SetSkillshot(0.25f, 120f, 1400f, false, false, SkillshotType.Line);
+            R.SetSkillshot(1.2f, 120f, float.MaxValue, false, false, SkillshotType.Circle);
+            Botrk = new Item(ItemId.Blade_of_the_Ruined_King, 400);
             Ignite = new Spell(ObjectManager.Player.GetSpellSlot("summonerdot"), 600);
             var MenuKog = new Menu("Doctor's KogMaw", "KogMaw", true);
             MenuKog.Add(new MenuSeparator("Ideas Haxory", "Ideas Haxory"));
@@ -98,6 +102,13 @@ namespace KogMaw
             KillStealMenu.Add(new MenuBool("KsR", "Use [R] KillSteal"));
             KillStealMenu.Add(new MenuBool("ign", "Use [Ignite] KillSteal"));
             MenuKog.Add(KillStealMenu);
+            Items = new Menu("Items Settings", "Items");
+            Items.Add(new MenuSeparator("Items Settings", "Items Settings"));
+            Items.Add(new MenuBool("you", "Use [Youmuu]"));
+            Items.Add(new MenuBool("BOTRK", "Use [BOTRK]"));
+            Items.Add(new MenuSlider("ihp", "My HP Use BOTRK <=", 50));
+            Items.Add(new MenuSlider("ihpp", "Enemy HP Use BOTRK <=", 50));
+            MenuKog.Add(Items);
             Misc = new Menu("Misc Settings", "Misc");
             Misc.Add(new MenuSeparator("Misc Settings", "Misc Settings"));
             Misc.Add(new MenuBool("checkSkin", "Use Skin Changer", false));
@@ -115,7 +126,21 @@ namespace KogMaw
             Game.OnUpdate += Game_OnUpdate;
             Orbwalker.OnAction += ResetAttack;
         }
+        public static void Item()
+        {
+            var item = Items["BOTRK"].GetValue<MenuBool>().Enabled;
+            var yous = Items["you"].GetValue<MenuBool>().Enabled;
+            var Minhp = Items["ihp"].GetValue<MenuSlider>().Value;
+            var Minhpp = Items["ihpp"].GetValue<MenuSlider>().Value;
 
+            foreach (var target in GameObjects.EnemyHeroes.Where(e => e.IsValidTarget(475) && !e.IsDead))
+            {
+                if ((item && Botrk.IsReady && Botrk.IsOwned() && target.IsValidTarget(475)) && (Player.Instance.HealthPercent <= Minhp || target.HealthPercent < Minhpp))
+                {
+                    Botrk.Cast(target);
+                }
+            }
+        }
         private static void Drawing_OnDraw(EventArgs args)
         {
             if (Misc["DrawR"].GetValue<MenuBool>().Enabled && R.IsReady())
@@ -176,7 +201,7 @@ namespace KogMaw
                 Combo();
                 Ultimate();
             }
-
+            Item();
             KillSteal();
         }
 
@@ -194,7 +219,7 @@ namespace KogMaw
                     var Pred = E.GetPrediction(target);
                     if (Pred.Hitchance >= HitChance.High)
                     {
-                        E.Cast(Pred.CastPosition);
+                        //E.Cast(Pred.CastPosition);
                     }
                 }
             }
@@ -222,7 +247,7 @@ namespace KogMaw
                     var Pred = E.GetPrediction(target);
                     if (Pred.Hitchance >= HitChance.High)
                     {
-                        E.Cast(Pred.CastPosition);
+                        //E.Cast(Pred.CastPosition);
                     }
                 }
 
@@ -238,15 +263,14 @@ namespace KogMaw
             var Rlimit = ComboMenu["MinR"].GetValue<MenuSlider>().Value;
             var useR = ComboMenu["ultiR"].GetValue<MenuBool>().Enabled;
             var mana = ComboMenu["ManaR"].GetValue<MenuSlider>().Value;
-            var target = TargetSelector.GetTarget(R.Range, DamageType.Physical);
-            if (target != null)
-            {
+            var target = TargetSelector.GetTarget(R.Range);
+
                 if (useR && R.IsReady() && Player.Instance.GetBuffCount("kogmawlivingartillerycost") < Rlimit && Player.Instance.ManaPercent > mana)
                 {
                     if (ComboMenu["RMode"].GetValue<MenuList>().Index == 0)
                     {
                         var Rpred = R.GetPrediction(target);
-                        if (Rpred.Hitchance >= HitChance.High)
+                        if (Rpred.Hitchance >= HitChance.VeryHigh)
                         {
                             R.Cast(Rpred.CastPosition);
                         }
@@ -255,7 +279,7 @@ namespace KogMaw
                     if (R.IsReady() && ComboMenu["RMode"].GetValue<MenuList>().Index == 1 && target.HealthPercent <= 50)
                     {
                         var Rpred = R.GetPrediction(target);
-                        if (Rpred.Hitchance >= HitChance.High)
+                        if (Rpred.Hitchance >= HitChance.VeryHigh)
                         {
                             R.Cast(Rpred.CastPosition);
                         }
@@ -264,14 +288,14 @@ namespace KogMaw
                     if (R.IsReady() && ComboMenu["RMode"].GetValue<MenuList>().Index == 2 && target.HealthPercent <= 25)
                     {
                         var Rpred = R.GetPrediction(target);
-                        if (Rpred.Hitchance >= HitChance.High)
+                        if (Rpred.Hitchance >= HitChance.VeryHigh)
                         {
                             R.Cast(Rpred.CastPosition);
                         }
                     }
                 }
             }
-        }
+        
 
         private static void LaneClear()
         {
@@ -356,7 +380,7 @@ namespace KogMaw
                     var Pred = E.GetPrediction(target);
                     if (Pred.Hitchance >= HitChance.High)
                     {
-                        E.Cast(Pred.CastPosition);
+                        //E.Cast(Pred.CastPosition);
                     }
                 }
                 //(Player.Instance.ManaPercent <= mana
@@ -443,7 +467,7 @@ namespace KogMaw
             {
                 if (KsQ && Q.IsReady() && target.IsValidTarget(Q.Range))
                 {
-                    if (target.Health + target.AllShield < Player.Instance.GetSpellDamage(target, SpellSlot.Q))
+                    if (target.Health < Player.Instance.GetSpellDamage(target, SpellSlot.Q))
                     {
                         Q.Cast(target);
                     }
@@ -452,7 +476,7 @@ namespace KogMaw
                 if (KsR && R.IsReady() && target.IsValidTarget(R.Range))
                 {
                     var Rpred = R.GetPrediction(target);
-                    if (target.Health + target.Health + target.AllShield < RDamege(target) && Rpred.Hitchance >= HitChance.Medium)
+                    if (target.Health < _Player.GetSpellDamage(target, SpellSlot.R) && Rpred.Hitchance >= HitChance.VeryHigh)
                     {
                         R.Cast(Rpred.CastPosition);
                     }
