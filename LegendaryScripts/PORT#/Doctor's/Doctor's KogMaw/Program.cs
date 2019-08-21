@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System;
 using System.Collections.Generic;
@@ -32,7 +32,7 @@ namespace KogMaw
 
         static void Main(string[] args)
         {
-           GameEvent.OnGameLoad += OnLoadingComplete;
+            GameEvent.OnGameLoad += OnLoadingComplete;
         }
 
         static void OnLoadingComplete()
@@ -44,9 +44,7 @@ namespace KogMaw
             Q.SetSkillshot(250, 1650, 70, false, false, SkillshotType.Line);
             W = new Spell(SpellSlot.W, (uint)Player.Instance.GetRealAutoAttackRange());
             E = new Spell(SpellSlot.E, 1200);
-            E.SetSkillshot(500, 1400, 120, false, false, SkillshotType.Line);
             R = new Spell(SpellSlot.R, 900 + 300 * (uint)Player.Instance.Spellbook.GetSpell(SpellSlot.R).Level);
-            R.SetSkillshot(1200, 1400, 120, false, false, SkillshotType.Circle);
             Ignite = new Spell(ObjectManager.Player.GetSpellSlot("summonerdot"), 600);
             var MenuKog = new Menu("Doctor's KogMaw", "KogMaw", true);
             MenuKog.Add(new MenuSeparator("Ideas Haxory", "Ideas Haxory"));
@@ -103,7 +101,7 @@ namespace KogMaw
             Misc = new Menu("Misc Settings", "Misc");
             Misc.Add(new MenuSeparator("Misc Settings", "Misc Settings"));
             Misc.Add(new MenuBool("checkSkin", "Use Skin Changer", false));
-            Misc.Add(new MenuList("skin.Id", "Skin Mode", new[] { "Default", "1", "2", "3", "4", "5", "6", "7", "8" }) {Index = 0 });
+            Misc.Add(new MenuList("skin.Id", "Skin Mode", new[] { "Default", "1", "2", "3", "4", "5", "6", "7", "8" }) { Index = 0 });
             Misc.Add(new MenuBool("AntiGap", "Use [E] AntiGap"));
             Misc.Add(new MenuSeparator("Drawing Settings", "Drawing Settings"));
             Misc.Add(new MenuBool("DrawQ", "[Q] Range", false));
@@ -151,7 +149,7 @@ namespace KogMaw
         private static void Game_OnUpdate(EventArgs args)
         {
             R = new Spell(SpellSlot.R, 900 + 300 * (uint)Player.Instance.Spellbook.GetSpell(SpellSlot.R).Level);
-            R.SetSkillshot(1200, 2200, 120, false, SkillshotType.Circle);
+            R.SetSkillshot(1200, 2200, 120, false, false, SkillshotType.Circle);
             W = new Spell(SpellSlot.W, (uint)Player.Instance.GetRealAutoAttackRange());
 
             if (Orbwalker.ActiveMode.HasFlag(OrbwalkerMode.LaneClear))
@@ -219,12 +217,12 @@ namespace KogMaw
                     }
                 }
 
-                if (useE && E.IsReady() && target.IsValidTarget(E.Range) && _Player.Distance(target) > Player.Instance.GetRealAutoAttackRange())
+                if (useE && E.IsReady() && target.IsValidTarget(E.Range) && Q.IsReady() == false && W.IsReady() == false)
                 {
                     var Pred = E.GetPrediction(target);
                     if (Pred.Hitchance >= HitChance.High)
                     {
-                        E.Cast(target);
+                        E.Cast(Pred.CastPosition);
                     }
                 }
 
@@ -297,7 +295,7 @@ namespace KogMaw
                     R.Cast(minions);
                 }
 
-                if (useE && E.IsReady() && minions.IsValidTarget(E.Range))
+                if (useE && E.IsReady() && minions.IsValidTarget(E.Range) && Q.IsReady() == false)
                 {
                     E.Cast(minions.Position);
                 }
@@ -308,7 +306,7 @@ namespace KogMaw
         {
             if (E.IsReady() && Misc["AntiGap"].GetValue<MenuBool>().Enabled && sender.IsEnemy && sender.Distance(_Player) <= 375)
             {
-                E.Cast(sender);
+                //E.Cast(sender);
             }
         }
 
@@ -361,7 +359,7 @@ namespace KogMaw
                         E.Cast(Pred.CastPosition);
                     }
                 }
-               //(Player.Instance.ManaPercent <= mana
+                //(Player.Instance.ManaPercent <= mana
                 if (R.IsReady() && useR && Player.Instance.GetBuffCount("kogmawlivingartillerycost") < Rlimit)
                 {
                     var Rpred = R.GetPrediction(target);
@@ -390,7 +388,7 @@ namespace KogMaw
                     Q.Cast(monster);
                 }
 
-                if (useE && E.IsReady() && monster.IsValidTarget(E.Range))
+                if (useE && E.IsReady() && monster.IsValidTarget(E.Range) && Q.IsReady() == false && W.IsReady() == false)
                 {
                     E.Cast(monster.Position);
                 }
