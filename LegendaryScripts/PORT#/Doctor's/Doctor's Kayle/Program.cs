@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System;
 using System.Collections.Generic;
@@ -32,7 +32,7 @@ namespace Kayle
 
         static void Main(string[] args)
         {
-            GameEvent.OnGameLoad+= OnLoadingComplete;
+            GameEvent.OnGameLoad += OnLoadingComplete;
         }
 
         private static void OnLoadingComplete()
@@ -218,6 +218,10 @@ namespace Kayle
                     }
                 }
             }
+            if (Player.Instance.HealthPercent <= almin && R.IsReady())
+            {
+                R.Cast();
+            }
         }
 
         private static void Heals()
@@ -236,6 +240,10 @@ namespace Kayle
                         W.Cast(target2);
                     }
                 }
+            }
+            if (Player.Instance.HealthPercent <= almin && W.IsReady())
+            {
+                W.Cast();
             }
         }
 
