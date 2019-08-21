@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System;
 using System.Collections.Generic;
@@ -35,7 +35,7 @@ namespace StonedAmumu
 
         private static Spell R;
 
-        private static Menu Config , JungleMenu, ComboMenu, LaneClearMenu, DrawMenu;
+        private static Menu Config, JungleMenu, ComboMenu, LaneClearMenu, DrawMenu;
 
         private static Items.Item RDO;
 
@@ -55,14 +55,17 @@ namespace StonedAmumu
 
         static void Main(string[] args)
         {
-           GameEvent.OnGameLoad += Game_OnGameLoad;
+            GameEvent.OnGameLoad += Game_OnGameLoad;
         }
-
+        public static AIHeroClient _Player
+        {
+            get { return ObjectManager.Player; }
+        }
 
         static void Game_OnGameLoad()
         {
             Player = ObjectManager.Player;
-            if (ObjectManager.Player.Name != Champion) return;
+            if (!_Player.CharacterName.Contains("Amumu")) return;
 
             Q = new Spell(SpellSlot.Q, 1000);
             W = new Spell(SpellSlot.W, 300);
@@ -132,57 +135,54 @@ namespace StonedAmumu
         private static void OnGameUpdate(EventArgs args)
         {
             Player = ObjectManager.Player;
-
-            Orbwalker.AttackState = true;
-            if (ComboMenu["ActiveCombo"].GetValue<MenuKeyBind>().Active)
+            if (Orbwalker.ActiveMode.HasFlag(OrbwalkerMode.LaneClear))
             {
-                Combo();
+                //WaveClear();
             }
-            if (JungleMenu["ActiveClear"].GetValue<MenuKeyBind>().Active)
+            if (Orbwalker.ActiveMode.HasFlag(OrbwalkerMode.LaneClear))
             {
                 JungleClear();
             }
-            if (LaneClearMenu["ActiveClear"].GetValue<MenuKeyBind>().Active)
+            if (Orbwalker.ActiveMode.HasFlag(OrbwalkerMode.Combo))
             {
-                WaveClear();
+                Combo();
             }
 
         }
 
         private static void WaveClear()
         {
+        
+            var minions = ObjectManager.Get<AIBaseClient>().OrderBy(m => m.Health).Where(m => m.IsMinion && m.IsEnemy && !m.IsDead);
+
             var minionQ = GameObjects.EnemyMinions.Where(e => e.IsValidTarget(Q.Range) && e.IsMinion())
-                .Cast<AIBaseClient>().ToList();
-            var quang = W.GetLineFarmLocation(minionQ, Q.Width);
-
-            
-
+                          .Cast<AIBaseClient>().ToList();
             var useQ = LaneClearMenu["UseQClear"].GetValue<MenuBool>().Enabled;
             var useW = LaneClearMenu["UseWClear"].GetValue<MenuBool>().Enabled;
             var useE = LaneClearMenu["UseEClear"].GetValue<MenuBool>().Enabled;
-            
 
-            if (quang.MinionsHit> 0)
+
+            foreach (var minion in minions)
             {
-                if (useQ && Q.IsReady() && minionQ[0].IsValidTarget() && Player.Distance(minionQ[0]) <= Q.Range)
+                if (useQ && Q.IsReady() && minion.IsValidTarget() && Player.Distance(minion) <= Q.Range)
                 {
-                    Q.Cast(quang.Position);
+                    Q.Cast(minion.Position);
                 }
 
-                if (useW && W.IsReady() && minionQ[0].IsValidTarget())
+                if (useW && W.IsReady() && minion.IsValidTarget())
                 {
-                    if (Player.Distance(minionQ[0]) <= W.Range && (Player.Spellbook.GetSpell(SpellSlot.W).ToggleState == 1))
+                    if (Player.Distance(minion) <= W.Range && (Player.Spellbook.GetSpell(SpellSlot.W).ToggleState == 1))
                     {
                         W.Cast();
                     }
-                    else if (Player.Distance(minionQ[0]) > W.Range && (Player.Spellbook.GetSpell(SpellSlot.W).ToggleState == 2))
+                    else if (Player.Distance(minion) > W.Range && (Player.Spellbook.GetSpell(SpellSlot.W).ToggleState == 2))
                     {
                         W.Cast();
                     }
 
                 }
 
-                if (useE && E.IsReady() && minionQ[0].IsValidTarget() && Player.Distance(minionQ[0]) <= E.Range)
+                if (useE && E.IsReady() && minion.IsValidTarget() && Player.Distance(minion) <= E.Range)
                 {
                     E.Cast();
                 }
@@ -195,34 +195,32 @@ namespace StonedAmumu
             var useW = JungleMenu["UseWClear"].GetValue<MenuBool>().Enabled;
             var useE = JungleMenu["UseEClear"].GetValue<MenuBool>().Enabled;
 
-            var allminions = GameObjects.Jungle.Where(e => e.IsValidTarget(Q.Range) && e.IsMinion())
-                .Cast<AIBaseClient>().ToList();
+            var allminions = GameObjects.Jungle.Where(j => j.IsValidTarget(Q.Range)).OrderByDescending(a => a.MaxHealth).FirstOrDefault();
 
-            if (allminions.Count > 0)
+
+            if (useQ && Q.IsReady() && allminions.IsValidTarget() && Player.Distance(allminions) <= Q.Range)
             {
-                if (useQ && Q.IsReady() && allminions[0].IsValidTarget() && Player.Distance(allminions[0]) <= Q.Range)
-                {
-                    Q.Cast(allminions[0].Position);
-                }
-
-                if (useW && W.IsReady() && allminions[0].IsValidTarget())
-                {
-                    if (Player.Distance(allminions[0]) <= W.Range && (Player.Spellbook.GetSpell(SpellSlot.W).ToggleState == 1))
-                    {
-                        W.Cast();
-                    }
-                    else if (Player.Distance(allminions[0]) > W.Range && (Player.Spellbook.GetSpell(SpellSlot.W).ToggleState == 2))
-                    {
-                        W.Cast();
-                    }
-
-                }
-
-                if (useE && E.IsReady() && allminions[0].IsValidTarget() && Player.Distance(allminions[0]) <= E.Range)
-                {
-                    E.Cast();
-                }
+                Q.Cast(allminions.Position);
             }
+
+            if (useW && W.IsReady() && allminions.IsValidTarget())
+            {
+                if (Player.Distance(allminions) <= W.Range && (Player.Spellbook.GetSpell(SpellSlot.W).ToggleState == 1))
+                {
+                    W.Cast();
+                }
+                else if (Player.Distance(allminions) > W.Range && (Player.Spellbook.GetSpell(SpellSlot.W).ToggleState == 2))
+                {
+                    W.Cast();
+                }
+
+            }
+
+            if (useE && E.IsReady() && allminions.IsValidTarget() && Player.Distance(allminions) <= E.Range)
+            {
+                E.Cast();
+            }
+
         }
 
 
