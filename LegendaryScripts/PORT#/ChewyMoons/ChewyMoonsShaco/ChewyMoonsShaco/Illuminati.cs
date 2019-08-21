@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System;
 using System.Collections.Generic;
@@ -18,7 +18,7 @@ namespace ChewyMoonsShaco
     internal class Illuminati
     {
         private const float BoxSafeDistance = 100;
-        public static float TriangleLegDistance = ChewyMoonShaco.Menu["BoxDistance"].GetValue<MenuSlider>().Value;
+        public static float TriangleLegDistance = ChewyMoonShaco.illuminatiMenu["BoxDistance"].GetValue<MenuSlider>().Value;
         private static readonly List<AIMinionClient> Boxes = new List<AIMinionClient>();
         private static Vector3 _extendPoint;
 
@@ -66,7 +66,7 @@ namespace ChewyMoonsShaco
 
         private static void GameOnOnUpdate(EventArgs args)
         {
-            if (!ChewyMoonShaco.Menu["RepairTriangle"].GetValue<MenuBool>().Enabled)
+            if (!ChewyMoonShaco.illuminatiMenu["RepairTriangle"].GetValue<MenuBool>().Enabled)
             {
                 return;
             }
