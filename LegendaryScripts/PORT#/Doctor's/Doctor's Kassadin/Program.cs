@@ -426,7 +426,6 @@ namespace Kassadin7
                 if (useW && W.IsReady() && jungleMonsters.IsValidTarget(275) && jungleMonsters.InAutoAttackRange() && Player.Instance.Distance(jungleMonsters.Position) <= 225f)
                 {
                     W.Cast();
-                    Player.IssueOrder(GameObjectOrder.AttackUnit, jungleMonsters);
                 }
 
                 if (useE && E.IsReady() && jungleMonsters.IsValidTarget(E.Range) && EReady)
