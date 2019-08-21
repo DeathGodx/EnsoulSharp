@@ -564,9 +564,9 @@ namespace Night_Stalker_Azir
             R = new Spell(SpellSlot.R, 250);
             Flash = new Spell(Player.GetSpellSlot("summonerflash"), 425);
 
-            Q.SetSkillshot(7.5f / 30, 70, 1000, false, SkillshotType.Line);
+            Q.SetSkillshot(7.5f / 30, 70, 1000, false,false, SkillshotType.Line);
             W.Delay = 0.25f;
-            E.SetSkillshot(7.5f / 30, 100, 2000, true, SkillshotType.Line);
+            E.SetSkillshot(7.5f / 30, 100, 2000, true,false, SkillshotType.Line);
 
             CreateMenu();
 
