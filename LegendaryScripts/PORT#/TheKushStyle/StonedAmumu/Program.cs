@@ -69,7 +69,7 @@ namespace StonedAmumu
             E = new Spell(SpellSlot.E, 350);
             R = new Spell(SpellSlot.R, 525);
 
-            Q.SetSkillshot(0.250f, 80, 2000, true, SkillshotType.Line);
+            Q.SetSkillshot(0.250f, 80, 2000, true, true, SkillshotType.Line);
 
             SpellList.Add(Q);
             SpellList.Add(W);
