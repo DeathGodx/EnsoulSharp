@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System;
 using System.Collections.Generic;
@@ -58,7 +58,7 @@ namespace Malphite
             ComboMenu.Add(new MenuSlider("DisQ", "Use [Q] If Enemy Distance >", 10, 0, 650));
             ComboMenu.Add(new MenuSeparator("[Q] Distance < 125 = Always [Q]", "[Q] Distance < 125 = Always [Q]"));
             ComboMenu.Add(new MenuSeparator("Ultimate Settings", "Ultimate Settings"));
-            ComboMenu.Add(new MenuKeyBind("ComboFQ", "Use [R] Selected Target", System.Windows.Forms.Keys.T, KeyBindType.Toggle));
+            ComboMenu.Add(new MenuKeyBind("ComboFQ", "Use [R] Selected Target", System.Windows.Forms.Keys.T, KeyBindType.Press)).Permashow();
             ComboMenu.Add(new MenuBool("ComboR", "Use [R] Aoe"));
             ComboMenu.Add(new MenuSlider("MinR", "Min Hit Enemies Use [R] Aoe", 3, 1, 5));
             ComboMenu.Add(new MenuSeparator("Interrupt Settings", "Interrupt Settings"));
@@ -98,7 +98,7 @@ namespace Malphite
             KillStealMenu.Add(new MenuSeparator("Ultimate Settings", "Ultimate Settings"));
             KillStealMenu.Add(new MenuBool("KsR", "Use [R] KillSteal"));
             KillStealMenu.Add(new MenuSlider("minKsR", "Min [R] Distance KillSteal", 100, 1, 1000));
-            KillStealMenu.Add(new MenuKeyBind("RKb", "[R] Semi Manual Key", System.Windows.Forms.Keys.Y, KeyBindType.Toggle));
+            KillStealMenu.Add(new MenuKeyBind("RKb", "[R] Semi Manual Key", System.Windows.Forms.Keys.Y, KeyBindType.Toggle)).Permashow();
             KillStealMenu.Add(new MenuSeparator("Recommended Distance 600", "Recommended Distance 600"));
             Menumalp.Add(KillStealMenu);
             Drawings = new Menu("Draw Settings", "Draw");
@@ -110,6 +110,7 @@ namespace Malphite
             Drawings.Add(new MenuBool("Notifications", "Alerter Can Killable [R]"));
             Drawings.Add(new MenuBool("Draw_Disabled", "Disabled Drawings"));
             Menumalp.Add(Drawings);
+            Menumalp.Attach();
             Drawing.OnDraw += Drawing_OnDraw;
             Game.OnUpdate += Game_OnUpdate;
             Interrupter.OnInterrupterSpell += Interupt;
