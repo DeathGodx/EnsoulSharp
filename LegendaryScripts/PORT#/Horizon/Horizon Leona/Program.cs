@@ -1,4 +1,4 @@
-﻿
+
 using System;
 using System.Linq;
 using EnsoulSharp.SDK;
@@ -32,7 +32,7 @@ namespace The_Horizon_Leona
 
         static void Main(string[] args)
         {
-            GameEvent.OnGameLoad  += Loading_OnLoadingComplete;
+            GameEvent.OnGameLoad += Loading_OnLoadingComplete;
 
         }
 
@@ -45,9 +45,9 @@ namespace The_Horizon_Leona
             Chat.Print("The Horizon Leona - Loaded, PORTED by DEATHGODX");
             Chat.Print("For best experience left-click target.");
 
-            _Q = new Spell(SpellSlot.Q, 175);
-            _W = new Spell(SpellSlot.W, 275);
-            _E = new Spell(SpellSlot.E, 750);//, SkillShotType.Linear, 250, 2000, 70);
+            _Q = new Spell(SpellSlot.Q, GameObjects.Player.GetRealAutoAttackRange());
+            _W = new Spell(SpellSlot.W, 405);
+            _E = new Spell(SpellSlot.E, 800);//, SkillShotType.Linear, 250, 2000, 70);
             _R = new Spell(SpellSlot.R, 1200);//, SkillShotType.Circular, castDelay: 250, spellWidth: 200);
             _Ignite = new Spell(ObjectManager.Player.GetSpellSlot("summonerdot"), 600);
 
@@ -55,26 +55,26 @@ namespace The_Horizon_Leona
             ComboMenu = new Menu("Combo", "Combo");
             DrawingsMenu = new Menu("Drawings", "Drawings");
             ActivatorMenu = new Menu("Activator", "Activator");
-
+            var Menuleo = new Menu("The Horizon Leona", "The Horizon Leona",true);
             ComboMenu.Add(new MenuSeparator("Combo Settings", "Combo Settings"));
             ComboMenu.Add(new MenuSeparator("Tick for enable/disable spells in Combo", "Tick for enable/disable spells in Combo"));
             ComboMenu.Add(new MenuBool("UseQ", "Use [Q]"));
             ComboMenu.Add(new MenuBool("UseW", "Use [W]"));
             ComboMenu.Add(new MenuBool("UseE", "Use [E]"));
             ComboMenu.Add(new MenuBool("UseR", "Use [R]"));
-            StartMenu.Add(ComboMenu);
+            Menuleo.Add(ComboMenu);
             DrawingsMenu.Add(new MenuSeparator("Drawing Settings", "Drawing Settings"));
             DrawingsMenu.Add(new MenuSeparator("Tick for enable/disable Draw Spell Range", "Tick for enable/disable Draw Spell Range"));
             DrawingsMenu.Add(new MenuBool("DQ", "- Draw [Q] range"));
             DrawingsMenu.Add(new MenuBool("DW", "- Draw [W] range"));
             DrawingsMenu.Add(new MenuBool("DE", "- Draw [E] range"));
             DrawingsMenu.Add(new MenuBool("DR", "- Draw [R] range"));
-            StartMenu.Add(DrawingsMenu);
+            Menuleo.Add(DrawingsMenu);
             ActivatorMenu.Add(new MenuSeparator("Activator Settings", "Activator Settings"));
             ActivatorMenu.Add(new MenuSeparator("Use Summoner Spell", "Use Summoner Spell"));
             ActivatorMenu.Add(new MenuBool("IGNI", "- Use Ignite if enemy is killable"));
-            StartMenu.Add(ActivatorMenu);
-            StartMenu.Attach();
+            Menuleo.Add(ActivatorMenu);
+            Menuleo.Attach();
 
 
             Game.OnTick += Game_OnTick;
@@ -152,18 +152,11 @@ namespace The_Horizon_Leona
             if (ComboMenu["UseE"].GetValue<MenuBool>().Enabled)
             {
                 if (target.IsValidTarget(_E.Range) && _E.IsReady())
-                    if (_E.GetPrediction(target).Hitchance >= HitChance.VeryHigh)
-                    {
-
-                        _E.Cast(target);
-
-
-                    }
+                    _E.Cast(target.Position);
             }
             if (ComboMenu["UseR"].GetValue<MenuBool>().Enabled)
             {
-                if (_E.GetPrediction(target).Hitchance >= HitChance.High)
-                    if (target.IsValidTarget(_R.Range))
+                if (target.IsValidTarget(_R.Range))
                     {
 
                         _R.Cast(target);
