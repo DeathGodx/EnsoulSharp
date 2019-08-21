@@ -44,7 +44,7 @@ namespace Tristana
             uint level = (uint)Player.Instance.Level;
             Q = new Spell(SpellSlot.Q);
             W = new Spell(SpellSlot.W, 900);
-            W.SetSkillshot(450, int.MaxValue, 180 , false , SkillshotType.Circle);
+            W.SetSkillshot(450, int.MaxValue, 180 , false , false, SkillshotType.Circle);
             E = new Spell(SpellSlot.E, 550 + level * 7);
             R = new Spell(SpellSlot.R, 550 + level * 7);
             Thm = new Font(Drawing.Direct3DDevice, new FontDescription { FaceName = "Tahoma", Height = 32, Weight = FontWeight.Bold, OutputPrecision = FontPrecision.Default, Quality = FontQuality.ClearType });
