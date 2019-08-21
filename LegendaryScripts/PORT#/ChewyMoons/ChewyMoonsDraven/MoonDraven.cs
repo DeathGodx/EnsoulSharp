@@ -175,8 +175,8 @@ namespace MoonDraven
             this.E = new Spell(SpellSlot.E, 1050);
             this.R = new Spell(SpellSlot.R);
 
-            this.E.SetSkillshot(0.25f, 130, 1400, false, SkillshotType.Line);
-            this.R.SetSkillshot(0.4f, 160, 2000, true, SkillshotType.Line);
+            this.E.SetSkillshot(0.25f, 130, 1400, false,false, SkillshotType.Line);
+            this.R.SetSkillshot(0.4f, 160, 2000, true,false, SkillshotType.Line);
             thm = new Font(Drawing.Direct3DDevice, new FontDescription { FaceName = "Tahoma", Height = 15, Weight = FontWeight.Bold, OutputPrecision = FontPrecision.Default, Quality = FontQuality.ClearType });
             thn = new Font(Drawing.Direct3DDevice, new FontDescription { FaceName = "Tahoma", Height = 22, Weight = FontWeight.Bold, OutputPrecision = FontPrecision.Default, Quality = FontQuality.ClearType });
             this.QReticles = new List<QRecticle>();
