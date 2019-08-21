@@ -43,7 +43,7 @@ namespace Sejuani7
             if (!_Player.CharacterName.Contains("Sejuani")) return;
             Chat.Print("Doctor's Sejuani Loaded! Ported by DeathGODx", Color.Orange);
             Bootstrap.Init(null);
-            Q = new Spell(SpellSlot.Q, 720);// SkillShotType.Linear, 0, 1600, 70);
+            Q = new Spell(SpellSlot.Q, 850);// SkillShotType.Linear, 0, 1600, 70);
             Q.SetSkillshot(0, 1600, 70, false,false, SkillshotType.Line);
             W = new Spell(SpellSlot.W, 600);
            // W.SetSkillshot(0, 1600, 70, false, false, SkillshotType.Line);
@@ -219,7 +219,7 @@ namespace Sejuani7
             var useW = ComboMenu["ComboW"].GetValue<MenuBool>().Enabled;
             foreach (var target in GameObjects.EnemyHeroes.Where(e => e.IsValidTarget(R.Range) && !e.IsDead))
             {
-                if (useQ && Q.IsReady() && target.IsValidTarget(Q.Range))
+                if (useQ && Q.IsReady() && target.IsValidTarget(Q.Range) && disQ <= target.Distance(Player.Instance))
                 {
                     Q.Cast(target);
                 }
