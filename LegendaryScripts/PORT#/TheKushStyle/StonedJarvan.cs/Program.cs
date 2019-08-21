@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System;
 using System.Collections.Generic;
@@ -19,7 +19,7 @@ namespace StonedJarvan
     class Program
     {
         private const string Champion = "JarvanIV";
-        
+
         private static List<Spell> SpellList = new List<Spell>();
 
         private static Spell Q;
@@ -40,26 +40,27 @@ namespace StonedJarvan
         {
             GameEvent.OnGameLoad += Game_OnGameLoad;
         }
-
+        public static AIHeroClient _Player
+        {
+            get { return ObjectManager.Player; }
+        }
         private static void Game_OnGameLoad()
         {
             Player = ObjectManager.Player;
-            if (ObjectManager.Player.Name != Champion) return;
+            if (!_Player.CharacterName.Contains("JarvanIV")) return;
             Q = new Spell(SpellSlot.Q, 770);
             W = new Spell(SpellSlot.W, 525);
             E = new Spell(SpellSlot.E, 800);
             R = new Spell(SpellSlot.R, 650);
             IgniteSlot = Player.GetSpellSlot("SummonerDot");
-            Q.SetSkillshot(0.25f, 70f, 1450f, false,false, SkillshotType.Line);
-            E.SetSkillshot(0.5f, 175f, int.MaxValue, false,false, SkillshotType.Circle);
+            Q.SetSkillshot(0.25f, 70f, 1450f, false, false, SkillshotType.Line);
+            E.SetSkillshot(0.5f, 175f, int.MaxValue, false, false, SkillshotType.Circle);
             SpellList.Add(Q);
             SpellList.Add(W);
             SpellList.Add(E);
             SpellList.Add(R);
-            Menu = new Menu(Champion, "StonedJarvan", true);
-            var targetSelectorMenu = new Menu("Target Selector", "Target Selector");
-            TargetSelector.GetTarget(targetSelectorMenu);
-            Menu.Add(targetSelectorMenu);
+            Menu = new Menu("Stoned", "StonedJarvan", true);
+
             ComboMenu = (new Menu("Combo", "Combo"));
             ComboMenu.Add(new MenuBool("UseQCombo", "Use Q"));
             ComboMenu.Add(new MenuBool("UseWCombo", "Use W"));
@@ -118,6 +119,14 @@ namespace StonedJarvan
 
         private static void OnGameUpdate(EventArgs args)
         {
+            if (Orbwalker.ActiveMode.HasFlag(OrbwalkerMode.LaneClear))
+            {
+                JungleClear();
+            }
+            if (Orbwalker.ActiveMode.HasFlag(OrbwalkerMode.LaneClear))
+            {
+                LaneClear();
+            }
             if (MiscMenu["EQmouse"].GetValue<MenuKeyBind>().Active)
             {
                 EQMouse();
@@ -134,14 +143,6 @@ namespace StonedJarvan
             {
                 Player.Spellbook.CastSpell(IgniteSlot, target);
             }
-            if (Orbwalker.ActiveMode.HasFlag(OrbwalkerMode.LaneClear))
-            {
-                JungleClear();
-            }
-            if (Orbwalker.ActiveMode.HasFlag(OrbwalkerMode.LaneClear))
-            {
-                LaneClear();
-            }
 
         }
         private static void LaneClear()
@@ -153,43 +154,42 @@ namespace StonedJarvan
             {
                 if (useE && E.IsReady() && minion.HealthPercent >= 70 && minion.IsValidTarget(E.Range) && Player.ManaPercent >= mana)
                 {
-                    E.Cast(minion);
+                    E.CastOnUnit(minion);
                 }
 
                 if (useQ && Q.IsReady() && minion.IsValidTarget(E.Range))
                 {
-                    Q.Cast();
+                    Q.Cast(minion);
                 }
             }
         }
 
         private static void JungleClear()
         {
-            var monster = GameObjects.Jungle.OrderByDescending(j => j.Health).FirstOrDefault(j => j.IsValidTarget(E.Range));
+            var monster = GameObjects.Jungle.Where(j => j.IsValidTarget(E.Range)).OrderByDescending(a => a.MaxHealth).FirstOrDefault();
             var useQ = JungleMenu["jungleQ"].GetValue<MenuBool>().Enabled;
             var useW = JungleMenu["jungleW"].GetValue<MenuBool>().Enabled;
             var useE = JungleMenu["jungleE"].GetValue<MenuBool>().Enabled;
             var mana = JungleMenu["manaJung"].GetValue<MenuSlider>().Value;
-            if (monster != null)
-            {
-                if (useQ && Q.IsReady() && monster.IsValidTarget(E.Range))
+
+                if (useQ && Q.IsReady() && monster.IsValidTarget(Q.Range))
                 {
-                    Q.Cast();
+                    Q.Cast(monster);
                 }
 
                 if (Player.ManaPercent < mana) return;
 
                 if (useW && W.IsReady() && monster.IsValidTarget(W.Range))
                 {
-                    W.Cast(monster.Position);
+                    W.CastOnUnit(monster);
                 }
 
                 if (useE && E.IsReady() && monster.IsValidTarget(E.Range))
                 {
-                    E.Cast(monster);
+                    E.CastOnUnit(monster);
                 }
             }
-        }
+
         private static void EQMouse()
         {
             if (E.IsReady() && Q.IsReady())
@@ -238,38 +238,38 @@ namespace StonedJarvan
             {
                 if (DrawMenu["DrawQ"].GetValue<MenuBool>().Enabled)
                 {
-                    Render.Circle.DrawCircle(ObjectManager.Player.Position, Q.Range, System.Drawing.Color.White, DrawMenu["CircleThickness"].GetValue<MenuSlider>().Value + DrawMenu["CircleQuality"].GetValue<MenuSlider>().Value);
+                    Render.Circle.DrawCircle(ObjectManager.Player.Position, Q.Range, System.Drawing.Color.DarkRed, DrawMenu["CircleThickness"].GetValue<MenuSlider>().Value + DrawMenu["CircleQuality"].GetValue<MenuSlider>().Value);
                 }
                 if (DrawMenu["DrawW"].GetValue<MenuBool>().Enabled)
                 {
-                    Render.Circle.DrawCircle(ObjectManager.Player.Position, W.Range, System.Drawing.Color.White, DrawMenu["CircleThickness"].GetValue<MenuSlider>().Value + DrawMenu["CircleQuality"].GetValue<MenuSlider>().Value);
+                    Render.Circle.DrawCircle(ObjectManager.Player.Position, W.Range, System.Drawing.Color.DarkRed, DrawMenu["CircleThickness"].GetValue<MenuSlider>().Value + DrawMenu["CircleQuality"].GetValue<MenuSlider>().Value);
                 }
                 if (DrawMenu["DrawE"].GetValue<MenuBool>().Enabled)
                 {
-                    Render.Circle.DrawCircle(ObjectManager.Player.Position, E.Range, System.Drawing.Color.White, DrawMenu["CircleThickness"].GetValue<MenuSlider>().Value + DrawMenu["CircleQuality"].GetValue<MenuSlider>().Value);
+                    Render.Circle.DrawCircle(ObjectManager.Player.Position, E.Range, System.Drawing.Color.DarkRed, DrawMenu["CircleThickness"].GetValue<MenuSlider>().Value + DrawMenu["CircleQuality"].GetValue<MenuSlider>().Value);
                 }
                 if (DrawMenu["DrawR"].GetValue<MenuBool>().Enabled)
                 {
-                    Render.Circle.DrawCircle(ObjectManager.Player.Position, R.Range, System.Drawing.Color.White, DrawMenu["CircleThickness"].GetValue<MenuSlider>().Value + DrawMenu["CircleQuality"].GetValue<MenuSlider>().Value);
+                    Render.Circle.DrawCircle(ObjectManager.Player.Position, R.Range, System.Drawing.Color.DarkRed, DrawMenu["CircleThickness"].GetValue<MenuSlider>().Value + DrawMenu["CircleQuality"].GetValue<MenuSlider>().Value);
                 }
             }
             else
             {
                 if (DrawMenu["DrawQ"].GetValue<MenuBool>().Enabled)
                 {
-                    Drawing.DrawCircle(ObjectManager.Player.Position, Q.Range, System.Drawing.Color.White);
+                    Drawing.DrawCircle(ObjectManager.Player.Position, Q.Range, System.Drawing.Color.DarkRed);
                 }
                 if (DrawMenu["DrawW"].GetValue<MenuBool>().Enabled)
                 {
-                    Drawing.DrawCircle(ObjectManager.Player.Position, W.Range, System.Drawing.Color.White);
+                    Drawing.DrawCircle(ObjectManager.Player.Position, W.Range, System.Drawing.Color.DarkRed);
                 }
                 if (DrawMenu["DrawE"].GetValue<MenuBool>().Enabled)
                 {
-                    Drawing.DrawCircle(ObjectManager.Player.Position, E.Range, System.Drawing.Color.White);
+                    Drawing.DrawCircle(ObjectManager.Player.Position, E.Range, System.Drawing.Color.DarkRed);
                 }
                 if (DrawMenu["DrawR"].GetValue<MenuBool>().Enabled)
                 {
-                    Drawing.DrawCircle(ObjectManager.Player.Position, R.Range, System.Drawing.Color.White);
+                    Drawing.DrawCircle(ObjectManager.Player.Position, R.Range, System.Drawing.Color.DarkRed);
                 }
             }
         }
