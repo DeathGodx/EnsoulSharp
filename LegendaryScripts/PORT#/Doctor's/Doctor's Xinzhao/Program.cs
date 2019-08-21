@@ -51,7 +51,7 @@ namespace XinZhao7
             W = new Spell(SpellSlot.W, 800);
             E = new Spell(SpellSlot.E, 600);
             R = new Spell(SpellSlot.R, 500);
-            W.SetSkillshot(0.25f, 60f, 1400f, true, SkillshotType.Circle);
+            W.SetSkillshot(0.25f, 60f, 1400f, true, true, SkillshotType.Circle);
             Ignite = new Spell(ObjectManager.Player.GetSpellSlot("summonerdot"), 600);
             thm = new Font(Drawing.Direct3DDevice, new FontDescription { FaceName = "Tahoma", Height = 15, Weight = FontWeight.Bold, OutputPrecision = FontPrecision.Default, Quality = FontQuality.ClearType });
             Tiamat = new Item(ItemId.Tiamat_Melee_Only, 400);
