@@ -248,12 +248,12 @@ namespace Olaf7
                     }
                 }
 
-                if (useW && W.IsReady() && target.IsValidTarget(E.Range))
+                if (useW && W.IsReady() && target.IsValidTarget(E.Range) && E.IsReady() == false)
                 {
                     W.Cast();
                 }
 
-                if (useE && E.IsReady() && target.IsValidTarget(E.Range) && _Player.Distance(target) > Player.Instance.GetRealAutoAttackRange(target))
+                if (useE && E.IsReady() && target.IsValidTarget(E.Range) )
                 {
                     E.Cast(target);
                 }
