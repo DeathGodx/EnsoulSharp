@@ -43,10 +43,11 @@ namespace Sejuani7
             if (!_Player.CharacterName.Contains("Sejuani")) return;
             Chat.Print("Doctor's Sejuani Loaded! Ported by DeathGODx", Color.Orange);
             Bootstrap.Init(null);
-            Q = new Spell(SpellSlot.Q, 650);// SkillShotType.Linear, 0, 1600, 70);
-            R.SetSkillshot(0, 1600, 70, false,false, SkillshotType.Line);
-            W = new Spell(SpellSlot.W, 350);
-            E = new Spell(SpellSlot.E, 1000);
+            Q = new Spell(SpellSlot.Q, 720);// SkillShotType.Linear, 0, 1600, 70);
+            Q.SetSkillshot(0, 1600, 70, false,false, SkillshotType.Line);
+            W = new Spell(SpellSlot.W, 600);
+           // W.SetSkillshot(0, 1600, 70, false, false, SkillshotType.Line);
+            E = new Spell(SpellSlot.E, 590);
             R = new Spell(SpellSlot.R, 1200);// SkillShotType.Linear, );
             R.SetSkillshot(250, 1600, 110, false,false, SkillshotType.Line);
             F = new Spell(_Player.GetSpellSlot("summonerflash"), 425);//, SkillShotType.Linear, 0, int.MaxValue, 60);
@@ -218,14 +219,14 @@ namespace Sejuani7
             var useW = ComboMenu["ComboW"].GetValue<MenuBool>().Enabled;
             foreach (var target in GameObjects.EnemyHeroes.Where(e => e.IsValidTarget(R.Range) && !e.IsDead))
             {
-                if (useQ && Q.IsReady() && target.IsValidTarget(Q.Range) && disQ <= target.Distance(Player.Instance))
+                if (useQ && Q.IsReady() && target.IsValidTarget(Q.Range))
                 {
                     Q.Cast(target);
                 }
 
-                if (useE && E.IsReady() && target.IsValidTarget(E.Range) && disE <= target.Distance(Player.Instance) && target.HasBuff("SejuaniFrost"))
+                if (useE && E.IsReady() && target.IsValidTarget(E.Range) && disE <= target.Distance(Player.Instance))
                 {
-                    E.Cast();
+                    E.CastOnUnit(target);
                 }
 
                 if (useR && R.IsReady() && target.IsValidTarget(R.Range))
@@ -239,7 +240,7 @@ namespace Sejuani7
 
                 if (useW && W.IsReady() && target.IsValidTarget(W.Range))
                 {
-                    W.Cast();
+                    W.Cast(target.Position);
                 }
             }
         }
@@ -286,12 +287,12 @@ namespace Sejuani7
 
                 if (useWLH && W.IsReady() && minion.IsValidTarget(W.Range))
                 {
-                    W.Cast();
+                    W.Cast(minion);
                 }
 
-                if (useE && E.IsReady() && minion.IsValidTarget(E.Range) && minion.HasBuff("SejuaniFrost"))
+                if (useE && E.IsReady() && minion.IsValidTarget(E.Range))
                 {
-                    E.Cast();
+                    E.CastOnUnit(minion);
                 }
             }
         }
@@ -311,14 +312,14 @@ namespace Sejuani7
                     Q.Cast(monters);
                 }
 
-                if (useE && E.IsReady() && monters.IsValidTarget(E.Range) && monters.HasBuff("SejuaniFrost"))
+                if (useE && E.IsReady() && monters.IsValidTarget(E.Range))
                 {
-                    E.Cast();
+                    E.CastOnUnit(monters);
                 }
 
                 if (useW && W.IsReady() && monters.IsValidTarget(W.Range))
                 {
-                    W.Cast();
+                    W.Cast(monters.Position);
                 }
             }
         }
@@ -340,11 +341,11 @@ namespace Sejuani7
                 }
                 if (useW && W.IsReady() && target.IsValidTarget(W.Range))
                 {
-                    W.Cast();
+                    W.Cast(target.Position);
                 }
-                if (useE && E.IsReady() && target.IsValidTarget(E.Range) && disE <= target.Distance(Player.Instance) && target.HasBuff("SejuaniFrost"))
+                if (useE && E.IsReady() && target.IsValidTarget(E.Range) && disE <= target.Distance(Player.Instance))
                 {
-                    E.Cast();
+                    E.CastOnUnit(target);
                 }
             }
         }
