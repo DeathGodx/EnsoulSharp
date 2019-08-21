@@ -46,9 +46,9 @@ namespace Pantheon
             Q = new Spell(SpellSlot.Q, 600);
             W = new Spell(SpellSlot.W, 600);
             E = new Spell(SpellSlot.E, 600);
-            E.SetSkillshot(250, 2000, 70, false, SkillshotType.Cone);
+            E.SetSkillshot(250, 2000, 70, false,false, SkillshotType.Cone);
             R = new Spell(SpellSlot.R, 2000);
-            R.SetSkillshot(1000, 2000, 160, false, SkillshotType.Circle);
+            R.SetSkillshot(1000, 2000, 160, false,false, SkillshotType.Circle);
             Youmuu = new Item(3142, 300);
             Botrk = new Item(ItemId.Blade_of_the_Ruined_King, 400);
             Bil = new Item(3144, 475f);
