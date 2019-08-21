@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System;
 using System.Collections.Generic;
@@ -59,7 +59,7 @@ namespace Talon7
             ComboMenu.Add(new MenuBool("ComboR", "Always Use [R] On Combo"));
             ComboMenu.Add(new MenuBool("riu", "Use [Hydra] Reset AA"));
             ComboMenu.Add(new MenuSeparator("Ultimate Settings", "Ultimate Settings"));
-            ComboMenu.Add(new MenuBool("rcount","Use [R] Aoe"));
+            ComboMenu.Add(new MenuBool("rcount", "Use [R] Aoe"));
             ComboMenu.Add(new MenuSlider("cou", "Min Enemies Around Use [R] Aoe", 2, 1, 5));
             MenuRyze.Add(ComboMenu);
             HarassMenu = new Menu("Harass Settings", "Harass");
@@ -69,7 +69,7 @@ namespace Talon7
             HarassMenu.Add(new MenuSlider("ManaW", "Min Mana Harass", 40));
             MenuRyze.Add(HarassMenu);
             LaneClearMenu = new Menu("LaneClear Settings", "LaneClear");
-            LaneClearMenu.Add(new MenuSeparator("Lane Clear Settings" , "Lane Clear Settings"));
+            LaneClearMenu.Add(new MenuSeparator("Lane Clear Settings", "Lane Clear Settings"));
             LaneClearMenu.Add(new MenuBool("LaneW", "Use [W]"));
             LaneClearMenu.Add(new MenuSlider("MinW", "Hit Minions LaneClear", 3, 1, 6));
             LaneClearMenu.Add(new MenuSlider("ManaLC", "Min Mana LaneClear", 60));
@@ -111,11 +111,11 @@ namespace Talon7
 
         private static void Drawing_OnDraw(EventArgs args)
         {
-            if (Misc["DrawW"].GetValue<MenuBool>().Enabled)
+            if (Misc["DrawW"].GetValue<MenuBool>().Enabled && W.IsReady())
             {
                 Render.Circle.DrawCircle(ObjectManager.Player.Position, W.Range, Color.Orange, 1);
             }
-            if (Misc["DrawQ"].GetValue<MenuBool>().Enabled)
+            if (Misc["DrawQ"].GetValue<MenuBool>().Enabled && Q.IsReady())
             {
                 Render.Circle.DrawCircle(ObjectManager.Player.Position, Q.Range, Color.Orange, 1);
             }
@@ -140,10 +140,10 @@ namespace Talon7
                     JungleClear();
                     break;
             }
-                KillSteal();
-                RStun();
-                AutoR();
-                Item();
+            KillSteal();
+            RStun();
+            AutoR();
+            Item();
         }
         public static bool RActive
         {
@@ -222,13 +222,13 @@ namespace Talon7
                             .Cast<AIBaseClient>().ToList();
             var qFarmLocation = W.GetLineFarmLocation(minions, W.Width);
             if (qFarmLocation.Position.IsValid())
- 
-            //var hitminion = GameObjects.Minions.(minions, W.Width, (int)W.Range);
 
-            if (Player.Instance.ManaPercent <= mana)
-            {
-                return;
-            }
+                //var hitminion = GameObjects.Minions.(minions, W.Width, (int)W.Range);
+
+                if (Player.Instance.ManaPercent <= mana)
+                {
+                    return;
+                }
 
             foreach (var minion in minions)
             {
@@ -349,7 +349,7 @@ namespace Talon7
 
         public static double QDamage(AIBaseClient target)
         {
-            return _Player.CalculateDamage(target,DamageType.Physical,
+            return _Player.CalculateDamage(target, DamageType.Physical,
                     (float)(new[] { 0, 80, 120, 140, 160, 180 }[Q.Level] + 1.1f * _Player.FlatPhysicalDamageMod));
 
         }
@@ -368,6 +368,10 @@ namespace Talon7
 
         public static void KillSteal()
         {
+            if (Player.HasBuff("TalonEHop"))
+            {
+
+            }
             var KsQ = KillStealMenu["KsQ"].GetValue<MenuBool>().Enabled;
             var KsW = KillStealMenu["KsW"].GetValue<MenuBool>().Enabled;
             var KsR = KillStealMenu["KsR"].GetValue<MenuBool>().Enabled;
