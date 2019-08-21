@@ -41,7 +41,7 @@ namespace Doctor_s_WuKong
             Chat.Print("Doctor's Wukong Loaded! PORTED By DeathGODx", Color.Orange);
             Bootstrap.Init(null);
             Q = new Spell(SpellSlot.Q, 450);
-            Q.SetSkillshot(0, 2000, 900, false, SkillshotType.Circle);
+            Q.SetSkillshot(0, 2000, 900, false, false, SkillshotType.Circle);
             W = new Spell(SpellSlot.W);
             E = new Spell(SpellSlot.E, 650);
             R = new Spell(SpellSlot.R, 375);
