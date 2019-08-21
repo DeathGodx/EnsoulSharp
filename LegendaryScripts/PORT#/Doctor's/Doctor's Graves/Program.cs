@@ -41,13 +41,13 @@ namespace Graves7
             if (!_Player.CharacterName.Contains("Graves")) return;
             Chat.Print("Doctor's Graves Loaded! PORTED by DeathGODX", Color.Orange);
             Q = new Spell(SpellSlot.Q, 850);
-            Q.SetSkillshot(250, 2000, 60, false, SkillshotType.Line);
+            Q.SetSkillshot(250, 2000, 60, false, false, SkillshotType.Line);
             W = new Spell(SpellSlot.W, 950);
-            W.SetSkillshot(250, 1650, 150, false, SkillshotType.Circle);
+            W.SetSkillshot(250, 1650, 150, false, false, SkillshotType.Circle);
             E = new Spell(SpellSlot.E, 425);
-            E.SetSkillshot(250, 1650, 150, false, SkillshotType.Line);
+            E.SetSkillshot(250, 1650, 150, false, false, SkillshotType.Line);
             R = new Spell(SpellSlot.R, 1500);
-            R.SetSkillshot(250, 2100, 100, false, SkillshotType.Circle);
+            R.SetSkillshot(250, 2100, 100, false, false, SkillshotType.Circle);
             Thm = new Font(Drawing.Direct3DDevice, new FontDescription { FaceName = "Tahoma", Height = 32, Weight = FontWeight.Bold, OutputPrecision = FontPrecision.Default, Quality = FontQuality.ClearType });
             Botrk = new Item(ItemId.Blade_of_the_Ruined_King, 450);
             Bil = new Item(3144, 475f);
