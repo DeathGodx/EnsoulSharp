@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using EnsoulSharp.SDK;
 using EnsoulSharp.SDK.MenuUI;
@@ -357,9 +357,10 @@ namespace Pantheon
                     W.Cast(target);
                 }
 
-                if (useQ && Q.CanCast(target))
+                if (useQ)
                 {
-                    Q.Cast(target);
+                    Q.Cast(target.Position - 400);
+                    Player.IssueOrder(GameObjectOrder.AttackUnit, target);
                 }
 
                 if (useE && E.CanCast(target))
@@ -499,7 +500,7 @@ namespace Pantheon
             {
                 if (useQ && Q.CanCast(monster))
                 {
-                    Q.Cast(monster);
+                    Q.Cast(monster.Position);
                 }
 
                 if (useW && W.CanCast(monster))
@@ -511,10 +512,9 @@ namespace Pantheon
                 {
                     if (useQ && useW)
                     {
-                        if (!Q.IsReady() && !W.IsReady())
-                        {
+                    
                             E.Cast(monster.Position);
-                        }
+                        
                     }
                     else
                     {
@@ -547,6 +547,7 @@ namespace Pantheon
                         if (target.Health + target.AllShield <= QDamage(target))
                         {
                             Q.Cast(target);
+                            
                         }
                     }
                     else
