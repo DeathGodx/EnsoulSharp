@@ -42,7 +42,7 @@ namespace Trundle7
             Chat.Print("Doctor's Trundle Loaded! Ported By DeathGodx", Color.Orange);
             Q = new Spell(SpellSlot.Q);
             W = new Spell(SpellSlot.W, 900);
-            W.SetSkillshot(0, 2000, 900, false, SkillshotType.Circle);
+            W.SetSkillshot(0, 2000, 900, false,false, SkillshotType.Circle);
             E = new Spell(SpellSlot.E, 1000);
             R = new Spell(SpellSlot.R, 650);
 
