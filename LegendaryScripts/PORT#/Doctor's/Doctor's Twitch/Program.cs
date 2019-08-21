@@ -48,7 +48,7 @@ namespace Twitch
             Chat.Print("Doctor's Twitch Loaded! PORTED by DeathGODX", Color.Orange);
             Q = new Spell(SpellSlot.Q);
             W = new Spell(SpellSlot.W, 900);
-            W.SetSkillshot(250, 1550, 275, false,false, SkillshotType.Circle);
+            //W.SetSkillshot(250, 1550, 275, false,false, SkillshotType.Circle);
             E = new Spell(SpellSlot.E, 1200);
             R = new Spell(SpellSlot.R);
             thm = new Font(Drawing.Direct3DDevice, new FontDescription { FaceName = "Tahoma", Height = 22, Weight = FontWeight.Bold, OutputPrecision = FontPrecision.Default, Quality = FontQuality.ClearType });
@@ -289,9 +289,7 @@ namespace Twitch
             var useW = JungleClearMenu["W"].GetValue<MenuBool>().Enabled;
             var useE = JungleClearMenu["E"].GetValue<MenuBool>().Enabled;
             var mana = JungleClearMenu["M"].GetValue<MenuSlider>().Value;
-            var monsters = GameObjects.Jungle.FirstOrDefault(a => a.IsValidTarget(E.Range) && (a.CharacterName == "SRU_Dragon" || a.CharacterName == "SRU_Baron"
-                || a.CharacterName == "SRU_Blue" || a.CharacterName == "SRU_Red" || a.CharacterName == "SRU_Dragon_Air" || a.CharacterName == "SRU_Dragon_Elder" || a.CharacterName == "SRU_Dragon_Earth"
-                || a.CharacterName == "SRU_Dragon_Fire" || a.CharacterName == "SRU_Dragon_Water"));
+            var monsters = GameObjects.Jungle.OrderByDescending(j => j.Health).FirstOrDefault(j => j.IsValidTarget(R.Range));
             if (Player.Instance.ManaPercent < mana)
             {
                 return;
@@ -303,7 +301,6 @@ namespace Twitch
                 {
                     W.Cast(monsters);
                 }
-
                 if (useE && E.IsReady() && E.IsInRange(monsters) && monsters.HasBuff("twitchdeadlyvenom") && monsters.Health + monsters.AllShield <= EDamage(monsters))
                 {
                     E.Cast();
@@ -454,18 +451,14 @@ namespace Twitch
 
                 if (useW && W.IsReady() && !QCasting && target.IsValidTarget(W.Range))
                 {
-                    var Wpred = W.GetPrediction(target);
-                    if (Wpred.Hitchance >= HitChance.Medium)
-                    {
-                        W.Cast(Wpred.CastPosition);
-                    }
+                        W.CastOnUnit(target);
                 }
 
                 if (useE && E.IsReady() && E.IsInRange(target) && target.HasBuff("twitchdeadlyvenom"))
                 {
                     if (HarassMenu["haras" + target.CharacterName].GetValue<MenuBool>().Enabled && Stack(target) >= MinE)
                     {
-                        E.Cast();
+                        E.Cast(target);
                     }
                 }
             }
