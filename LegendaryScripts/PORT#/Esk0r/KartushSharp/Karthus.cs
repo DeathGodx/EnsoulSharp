@@ -102,10 +102,10 @@ namespace KarthusSharp
             _spellE = new Spell(SpellSlot.E, 505);
             _spellR = new Spell(SpellSlot.R, 20000f);
 
-            _spellQ.SetSkillshot(1f, 160, float.MaxValue, false, SkillshotType.Circle);
-            _spellW.SetSkillshot(.5f, 70, float.MaxValue, false, SkillshotType.Circle);
-            _spellE.SetSkillshot(1f, 505, float.MaxValue, false, SkillshotType.Circle);
-            _spellR.SetSkillshot(3f, float.MaxValue, float.MaxValue, false, SkillshotType.Circle);
+            _spellQ.SetSkillshot(1f, 160, float.MaxValue, false, false, SkillshotType.Circle);
+            _spellW.SetSkillshot(.5f, 70, float.MaxValue, false, false, SkillshotType.Circle);
+            _spellE.SetSkillshot(1f, 505, float.MaxValue, false, false, SkillshotType.Circle);
+            _spellR.SetSkillshot(3f, float.MaxValue, float.MaxValue, false, false, SkillshotType.Circle);
 
             Drawing.OnDraw += Drawing_OnDraw;
             Game.OnUpdate += Game_OnUpdate;
