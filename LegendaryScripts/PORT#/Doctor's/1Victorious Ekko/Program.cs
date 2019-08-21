@@ -334,7 +334,7 @@ namespace Ekko
             }
             if (target != null)
             {
-                if (useQ && Q.CanCast(target))
+                if (useQ && Q.CanCast(target) && Q.IsReady())
                 {
                     var Qpred = Q.GetPrediction(target);
                     if (Qpred.Hitchance >= HitChance.High)
@@ -343,7 +343,7 @@ namespace Ekko
                     }
                 }
 
-                if (useW && W.CanCast(target))
+                if (useW && W.CanCast(target) && W.IsReady())
                 {
                     if (useW2)
                     {
