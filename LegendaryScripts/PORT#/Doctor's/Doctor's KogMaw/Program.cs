@@ -41,12 +41,12 @@ namespace KogMaw
             Chat.Print("Doctor's KogMaw Loaded!", Color.Orange);
             Bootstrap.Init(null);
             Q = new Spell(SpellSlot.Q, 1000);
-            Q.SetSkillshot(250, 1650, 70, false, SkillshotType.Line);
+            Q.SetSkillshot(250, 1650, 70, false, false, SkillshotType.Line);
             W = new Spell(SpellSlot.W, (uint)Player.Instance.GetRealAutoAttackRange());
             E = new Spell(SpellSlot.E, 1200);
-            Q.SetSkillshot(500, 1400, 120, false, SkillshotType.Line);
+            E.SetSkillshot(500, 1400, 120, false, false, SkillshotType.Line);
             R = new Spell(SpellSlot.R, 900 + 300 * (uint)Player.Instance.Spellbook.GetSpell(SpellSlot.R).Level);
-            R.SetSkillshot(1200, 1400, 120, false, SkillshotType.Circle);
+            R.SetSkillshot(1200, 1400, 120, false, false, SkillshotType.Circle);
             Ignite = new Spell(ObjectManager.Player.GetSpellSlot("summonerdot"), 600);
             var MenuKog = new Menu("Doctor's KogMaw", "KogMaw", true);
             MenuKog.Add(new MenuSeparator("Ideas Haxory", "Ideas Haxory"));
