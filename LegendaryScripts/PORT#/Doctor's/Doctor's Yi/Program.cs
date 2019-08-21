@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System;
 using System.Collections.Generic;
@@ -142,8 +142,9 @@ namespace Yi
         private static void Drawing_OnDraw(EventArgs args)
         {
             if (_Player.IsDead) return;
-            if (Drawings["DrawQ"].GetValue<MenuBool>().Enabled)
-            { Render.Circle.DrawCircle(ObjectManager.Player.Position, Q.Range, Color.Orange, 1);
+            if (Drawings["DrawQ"].GetValue<MenuBool>().Enabled && Q.IsReady())
+            {
+                Render.Circle.DrawCircle(ObjectManager.Player.Position, Q.Range, Color.Orange, 1);
             }
         }
 
@@ -157,9 +158,9 @@ namespace Yi
             else
             {
                 if (Player.HasBuff("Meditate") == false && W.IsReady() == false)
-                { 
+                {
                     Orbwalker.MovementState = true;
-                Orbwalker.AttackState = true;
+                    Orbwalker.AttackState = true;
                 }
             }
 
@@ -286,7 +287,7 @@ namespace Yi
             var minE = LaneClearMenu["mine"].GetValue<MenuSlider>().Value;
             var minion = GameObjects.EnemyMinions.Where(e => e.IsValidTarget(Q.Range) && e.IsMinion())
                             .Cast<AIBaseClient>().ToList();
-            
+
             foreach (var minions in minion)
             {
                 if (useQ && Q.IsReady() && Player.Instance.ManaPercent >= mana)
