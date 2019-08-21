@@ -12,7 +12,6 @@ using static EnsoulSharp.SDK.Items;
 using SharpDX.Direct3D9;
 using static EnsoulSharp.SDK.Interrupter;
 using EnsoulSharp.SDK.Prediction;
-using SPrediction;
 
 namespace The_Horizon_Leona
 {
