@@ -107,20 +107,16 @@ namespace ChewyMoonsShaco
 
         private static void CreateMenu()
         {
-            Menu = new Menu("[Chewy's Shaco]", "cmShaco", true);
+            Menu = new Menu("[Chewy's Shaco]", "Chewy Moons Shaco", true);
 
             // Target Selector
-            var tsMenu = new Menu("Target Selector", "cmShacoTS");
-            //TargetSelector.AddToMenu(tsMenu);
-            Menu.Add(tsMenu);
+
 
             // Orbwalking
-            var orbwalkingMenu = new Menu("Orbwalking", "cmShacoOrbwalkin");
-            //Orbwalker = new Orbwalking.Orbwalker(orbwalkingMenu);
-            Menu.Add(orbwalkingMenu);
+
 
             // Combo
-            comboMenu = new Menu("Combo", "cmShacoCombo");
+            comboMenu = new Menu("Combo", "Combo");
             comboMenu.Add(new MenuBool("useQ", "Use Q"));
             comboMenu.Add(new MenuBool("useW", "Use W"));
             comboMenu.Add(new MenuBool("useE", "Use E"));
@@ -130,24 +126,24 @@ namespace ChewyMoonsShaco
             Menu.Add(comboMenu);
 
             // Harass
-            var harassMenu = new Menu("Harass", "cmShacoHarass");
+            var harassMenu = new Menu("Harass", "Harass");
             harassMenu.Add(new MenuBool("useEHarass", "Use E"));
             Menu.Add(harassMenu);
 
             // Ks
-            ksMenu = new Menu("KS", "cmShacoKS");
+            ksMenu = new Menu("KS", "KillSteal");
             ksMenu.Add(new MenuBool("ksE", "Use E"));
             Menu.Add(ksMenu);
 
             //Escape
-            escapeMenu = new Menu("Escape", "esc");
-            escapeMenu.Add(new MenuKeyBind("Escape", "Escape", System.Windows.Forms.Keys.Z, KeyBindType.Press));
-            escapeMenu.Add(new MenuKeyBind("EscapeR", "Escape With Ultimate",System.Windows.Forms.Keys.X, KeyBindType.Press));
+            escapeMenu = new Menu("Escape", "Flee Espace");
+            escapeMenu.Add(new MenuKeyBind("Escape", "Escape", System.Windows.Forms.Keys.Z, KeyBindType.Press)).Permashow();
+            escapeMenu.Add(new MenuKeyBind("EscapeR", "Escape With Ultimate",System.Windows.Forms.Keys.X, KeyBindType.Press)).Permashow();
             escapeMenu.Add(new MenuBool("Evade", "Evade With Ultimate"));
             Menu.Add(escapeMenu);
             // ILLUMINATI
-            illuminatiMenu = new Menu("Illuminati", "cmShacoTriangleIlluminatiSp00ky");
-            illuminatiMenu.Add(new MenuKeyBind("PlaceBox", "Place Box", System.Windows.Forms.Keys.C, KeyBindType.Press));
+            illuminatiMenu = new Menu("Illuminati", "Box Settings Illimunati");
+            illuminatiMenu.Add(new MenuKeyBind("PlaceBox", "Place Box", System.Windows.Forms.Keys.C, KeyBindType.Press)).Permashow();
             illuminatiMenu.Add(new MenuBool("RepairTriangle", "Repair Triangle & Auto Form Triangle"));
             illuminatiMenu.Add(new MenuSlider("BoxDistance", "Box Distance", 600, 101, 1200));
             /*illuminatiMenu["BoxDistance"].GetValue<MenuSlider>().Value += delegate (object sender, MenuValueChangedEventArgs args)
@@ -156,7 +152,7 @@ namespace ChewyMoonsShaco
                 };*/
             Menu.Add(illuminatiMenu);
             // Drawing
-            drawingMenu = new Menu("Drawings", "cmShacoDrawing");
+            drawingMenu = new Menu("Drawings", "Drawing");
             drawingMenu.Add(new MenuBool("drawQ", "Draw Q"));
             drawingMenu.Add(new MenuBool("drawQPos", "Draw Q Pos"));
             drawingMenu.Add(new MenuBool("drawW", "Draw W"));
@@ -164,7 +160,7 @@ namespace ChewyMoonsShaco
             Menu.Add(drawingMenu);
 
             // Misc
-            miscMenu = new Menu("Misc", "cmShacoMisc");
+            miscMenu = new Menu("Misc", "Misc");
             miscMenu.Add(new MenuBool("usePackets", "Use packets"));
             miscMenu.Add(new MenuBool("stuff", "Let me know of any"));
             miscMenu.Add(new MenuBool("stuff2", "other misc features you want"));
