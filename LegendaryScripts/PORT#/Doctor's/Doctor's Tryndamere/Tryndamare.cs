@@ -53,7 +53,7 @@ namespace Tryndamere
             Q = new Spell(SpellSlot.Q);
             W = new Spell(SpellSlot.W, 800);
             E = new Spell(SpellSlot.E, 660);
-            W.SetSkillshot(250, 700, 92, false, SkillshotType.Line);
+            W.SetSkillshot(250, 700, 92, false,false, SkillshotType.Line);
             R = new Spell(SpellSlot.R, 500);
             Ignite = new Spell(ObjectManager.Player.GetSpellSlot("summonerdot"), 600);
             thm = new Font(Drawing.Direct3DDevice, new FontDescription { FaceName = "Tahoma", Height = 15, Weight = FontWeight.Bold, OutputPrecision = FontPrecision.Default, Quality = FontQuality.ClearType });
