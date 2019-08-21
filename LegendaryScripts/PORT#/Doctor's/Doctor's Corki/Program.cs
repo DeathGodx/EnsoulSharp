@@ -46,10 +46,10 @@ namespace Borki7
             Chat.Print("Doctor's Corki Loaded! PORTED By DEATHGODX", Color.Orange);
             Q = new Spell(SpellSlot.Q, 825);
             W = new Spell(SpellSlot.W, 800);
-            W.SetSkillshot(300, 1000, 250, false, SkillshotType.Line);
+            W.SetSkillshot(300, 1000, 250, false, false, SkillshotType.Line);
             E = new Spell(SpellSlot.E, 660);
             R = new Spell(SpellSlot.R, 1200);
-            R.SetSkillshot(200, 1950, 40, false, SkillshotType.Line);
+            R.SetSkillshot(200, 1950, 40, false, false, SkillshotType.Line);
             Botrk = new Item(ItemId.Blade_of_the_Ruined_King, 400);
             Bil = new Item(3144, 475f);
             Ignite = new Spell(ObjectManager.Player.GetSpellSlot("summonerdot"), 600);
