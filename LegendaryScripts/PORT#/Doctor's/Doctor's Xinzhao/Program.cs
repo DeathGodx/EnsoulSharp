@@ -66,7 +66,7 @@ namespace XinZhao7
             ComboMenu.Add(new MenuBool("ComboW", "Use [W] Combo"));
             ComboMenu.Add(new MenuBool("ComboE", "Use [E] Combo"));
             ComboMenu.Add(new MenuSlider("DisE", "Use [E] If Enemy Distance >", 250, 0, 600));
-            ComboMenu.Add(new MenuKeyBind("CTurret", "Dont Use [E] UnderTurret", System.Windows.Forms.Keys.T, KeyBindType.Toggle));
+            ComboMenu.Add(new MenuKeyBind("CTurret", "Dont Use [E] UnderTurret", System.Windows.Forms.Keys.T, KeyBindType.Toggle)).Permashow();
             ComboMenu.Add(new MenuSeparator("Items Settings", "Items Settings"));
             ComboMenu.Add(new MenuBool("hydra", "Use [Hydra] Reset AA"));
             ComboMenu.Add(new MenuBool("BOTRK", "Use [Botrk]"));
@@ -109,7 +109,7 @@ namespace XinZhao7
             Misc = new Menu("Misc Settings", "Misc");
             Misc.Add(new MenuSeparator("Skin Settings", "Skin Settings"));
             Misc.Add(new MenuBool("checkSkin", "Use Skin Changer", false));
-            Misc.Add(new MenuList("skin.Id", "Skin Mode", new[] { "Default", "1", "2", "3", "4", "5", "6"}) { Index = 0 });
+            Misc.Add(new MenuList("skin.Id", "Skin Mode", new[] { "Default", "1", "2", "3", "4", "5", "6" }) { Index = 0 });
             Misc.Add(new MenuSeparator("Drawing Settings", "Drawing Settings"));
             Misc.Add(new MenuBool("DrawR", "R Range"));
             Misc.Add(new MenuBool("DrawE", "E Range"));
@@ -128,11 +128,11 @@ namespace XinZhao7
 
         private static void Drawing_OnDraw(EventArgs args)
         {
-            if (Misc["DrawR"].GetValue<MenuBool>().Enabled)
+            if (Misc["DrawR"].GetValue<MenuBool>().Enabled && R.IsReady())
             {
                 Render.Circle.DrawCircle(ObjectManager.Player.Position, R.Range, Color.Black, 1);
             }
-            if (Misc["DrawE"].GetValue<MenuBool>().Enabled)
+            if (Misc["DrawE"].GetValue<MenuBool>().Enabled && E.IsReady())
             {
 
                 Render.Circle.DrawCircle(ObjectManager.Player.Position, E.Range, Color.Black, 1);
@@ -318,7 +318,7 @@ namespace XinZhao7
 
                 if (useW && W.IsReady() && minion.IsValidTarget(800))
                 {
-                    W.Cast();
+                    W.Cast(minion);
                 }
             }
         }
@@ -360,7 +360,7 @@ namespace XinZhao7
 
                 if (useW && W.IsReady() && jungleMonsters.IsValidTarget(800))
                 {
-                    W.Cast();
+                    W.Cast(jungleMonsters);
                 }
 
                 if (useE && E.IsReady() && jungleMonsters.IsValidTarget(E.Range))
