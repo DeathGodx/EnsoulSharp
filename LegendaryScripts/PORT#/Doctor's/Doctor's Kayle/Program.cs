@@ -56,7 +56,7 @@ namespace Kayle
             Ulti.Add(new MenuBool("ultiR2", "Use [R]"));
             Ulti.Add(new MenuSlider("Alhp", "HP Use [R]", 25));
             Ulti.Add(new MenuSeparator("Use [R] On", "Use [R] On"));
-            foreach (var target in GameObjects.EnemyHeroes)
+            foreach (var target in GameObjects.AllyHeroes)
             {
                 Ulti.Add(new MenuBool("useRon" + target.CharacterName, "" + target.CharacterName));
             }
@@ -67,7 +67,7 @@ namespace Kayle
             Heal.Add(new MenuSlider("ManaHeal", "Mana Use Heal", 20));
             Heal.Add(new MenuSlider("AlW", "Allies HP Use [W]", 70));
             Heal.Add(new MenuSeparator("Use [W] On", "Use [W] On"));
-            foreach (var target in GameObjects.EnemyHeroes)
+            foreach (var target in GameObjects.AllyHeroes)
             {
                 Heal.Add(new MenuBool("useWon" + target.CharacterName, "" + target.CharacterName));
             }
@@ -205,22 +205,20 @@ namespace Kayle
 
         private static void Ultimate()
         {
-            var almin = Ulti["Alhp"].GetValue<MenuSlider>().Value;
-            var useR2 = Ulti["ultiR2"].GetValue<MenuBool>().Enabled;
-            var target = GameObjects.EnemyHeroes.Where(a => a.IsValidTarget() && a.Distance(_Player.Position) <= R.Range && !a.IsDead && !a.IsZombie && !a.HasBuff("kindredrnodeathbuff") && !a.HasBuff("Undying Rage") && !a.HasBuff("JudicatorIntervention") && !a.HasBuff("Recall"));
+            var almin = Heal["AlW"].GetValue<MenuSlider>().Value;
+            var useW2 = Heal["healW2"].GetValue<MenuBool>().Enabled;
+            var mana = Heal["ManaHeal"].GetValue<MenuSlider>().Value;
+            var target = GameObjects.AllyHeroes.Where(a => a.IsValidTarget() && a.Distance(_Player.Position) <= W.Range && !a.IsDead && !a.IsZombie && !a.HasBuff("kindredrnodeathbuff") && !a.HasBuff("JudicatorIntervention") && !a.HasBuff("Recall"));
+            if (Player.Instance.ManaPercent <= mana) return;
             foreach (var target2 in target)
             {
-                if (useR2 && !Player.Instance.InShop() && R.IsReady() && (!Player.Instance.IsRecalling()) && (target2.Position.CountEnemyHeroesInRange(R.Range) >= 1 || Tru(target2.Position)))
+                if (useW2 && W.IsReady() && !Player.Instance.InShop() && !Player.Instance.IsRecalling())
                 {
-                    if (Ulti["useRon" + target2.CharacterName].GetValue<MenuBool>().Enabled && (target2.HealthPercent <= almin || target2.HasBuff("ZedR")))
+                    if (Heal["useWon" + target2.CharacterName].GetValue<MenuBool>().Enabled && (target2.HealthPercent <= almin || target2.HasBuff("ZedR")))
                     {
-                        R.Cast(target2);
+                        W.Cast(target2);
                     }
                 }
-            }
-            if (Player.Instance.HealthPercent <= almin && R.IsReady())
-            {
-                R.Cast();
             }
         }
 
