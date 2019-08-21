@@ -44,11 +44,11 @@ namespace Sejuani7
             Chat.Print("Doctor's Sejuani Loaded! Ported by DeathGODx", Color.Orange);
             Bootstrap.Init(null);
             Q = new Spell(SpellSlot.Q, 650);// SkillShotType.Linear, 0, 1600, 70);
-            R.SetSkillshot(0, 1600, 70, false, SkillshotType.Line);
+            R.SetSkillshot(0, 1600, 70, false,false, SkillshotType.Line);
             W = new Spell(SpellSlot.W, 350);
             E = new Spell(SpellSlot.E, 1000);
             R = new Spell(SpellSlot.R, 1200);// SkillShotType.Linear, );
-            R.SetSkillshot(250, 1600, 110, false, SkillshotType.Line);
+            R.SetSkillshot(250, 1600, 110, false,false, SkillshotType.Line);
             F = new Spell(_Player.GetSpellSlot("summonerflash"), 425);//, SkillShotType.Linear, 0, int.MaxValue, 60);
             F.SetSkillshot(0, int.MaxValue, 60, false, SkillshotType.Line);
             //F.AllowedCollisionCount = int.MaxValue;
