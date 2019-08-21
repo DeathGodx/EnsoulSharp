@@ -14,7 +14,7 @@ using Color = System.Drawing.Color;
 using static EnsoulSharp.SDK.Items;
 using SharpDX.Direct3D9;
 using static EnsoulSharp.SDK.Interrupter;
-
+// Rdamage to SpellSlotR
 namespace KogMaw
 {
     internal class Program
