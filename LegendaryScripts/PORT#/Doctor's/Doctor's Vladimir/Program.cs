@@ -41,7 +41,7 @@ namespace Vladimir
             W = new Spell(SpellSlot.W);
             E = new Spell(SpellSlot.E, 600);
             R = new Spell(SpellSlot.R, 700);
-            R.SetSkillshot(250, 1200, 150, false,false, SkillshotType.Circle);
+            R.SetSkillshot(250, 1200, 150, false, false, SkillshotType.Circle);
             Ignite = new Spell(ObjectManager.Player.GetSpellSlot("summonerdot"), 600);
             Thn = new Font(Drawing.Direct3DDevice, new FontDescription { FaceName = "Tahoma", Height = 15, Weight = FontWeight.Bold, OutputPrecision = FontPrecision.Default, Quality = FontQuality.ClearType });
             var MenuVlad = new Menu("Doctor's Vladimir", "Vladimir", true);
@@ -97,7 +97,7 @@ namespace Vladimir
             HarassMenu.Add(new MenuSeparator("Harass Settings", "Harass Settings"));
             HarassMenu.Add(new MenuBool("HarassQ", "Use [Q] Harass"));
             HarassMenu.Add(new MenuBool("HarassE", "Use [E] Harass"));
-            HarassMenu.Add(new MenuKeyBind("Autoqh", "Auto [Q] Harass", System.Windows.Forms.Keys.T, KeyBindType.Toggle));
+            HarassMenu.Add(new MenuKeyBind("Autoqh", "Auto [Q] Harass", System.Windows.Forms.Keys.T, KeyBindType.Toggle)).Permashow();
             MenuVlad.Add(HarassMenu);
             LaneClearMenu = new Menu("Clear Settings", "LaneClear");
             LaneClearMenu.Add(new MenuSeparator("Clear Settings", "Clear Settings"));
@@ -140,17 +140,17 @@ namespace Vladimir
         {
             if (_Player.IsDead) return;
 
-            if (Drawings["DrawQ"].GetValue<MenuBool>().Enabled)
+            if (Drawings["DrawQ"].GetValue<MenuBool>().Enabled && Q.IsReady())
             {
                 Render.Circle.DrawCircle(ObjectManager.Player.Position, Q.Range, Color.Orange, 1);
             }
 
-            if (Drawings["DrawE"].GetValue<MenuBool>().Enabled)
+            if (Drawings["DrawE"].GetValue<MenuBool>().Enabled && E.IsReady())
             {
                 Render.Circle.DrawCircle(ObjectManager.Player.Position, E.Range, Color.Orange, 1);
             }
 
-            if (Drawings["DrawR"].GetValue<MenuBool>().Enabled)
+            if (Drawings["DrawR"].GetValue<MenuBool>().Enabled && R.IsReady())
             {
                 Render.Circle.DrawCircle(ObjectManager.Player.Position, R.Range, Color.Orange, 1);
             }
