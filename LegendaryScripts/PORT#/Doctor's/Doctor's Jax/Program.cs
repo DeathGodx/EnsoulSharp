@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System;
 using System.Collections.Generic;
@@ -50,7 +50,7 @@ namespace Jax
             var Menujax = new Menu("Jax", "Jax", true);
             ComboMenu = new Menu("Combo Settings", "Combo");
             ComboMenu.Add(new MenuSeparator("Combo Settings", "Combo Settings"));
-            ComboMenu.Add(new MenuList("comboMode", "Combo Mode:", new[] { "E => Q", "Q => E" }) {Index = 0});
+            ComboMenu.Add(new MenuList("comboMode", "Combo Mode:", new[] { "E => Q", "Q => E" }) { Index = 0 });
             ComboMenu.Add(new MenuBool("ComboQ", "Combo [Q]"));
             ComboMenu.Add(new MenuBool("ComboW", "Combo [W]"));
             ComboMenu.Add(new MenuBool("ComboE", "Combo [E]"));
@@ -238,6 +238,26 @@ namespace Jax
                         }
                     }
                 }
+                var targetz = TargetSelector.GetTarget(300, DamageType.Physical);
+                var useW = ComboMenu["ComboW"].GetValue<MenuBool>().Enabled;
+                var HasW = HarassMenu["HarassW"].GetValue<MenuBool>().Enabled;
+                var mana = HarassMenu["ManaQ"].GetValue<MenuSlider>().Value;
+                if (target != null)
+                {
+                    if (useW && W.IsReady() && Orbwalker.ActiveMode.HasFlag(OrbwalkerMode.Combo))
+                    {
+                        W.Cast();
+                        //Orbwalker.ResetAutoAttackTimer();
+                        Player.IssueOrder(GameObjectOrder.AttackUnit, targetz);
+                    }
+
+                    if (HasW && W.IsReady() && Orbwalker.ActiveMode.HasFlag(OrbwalkerMode.Harass) && _Player.ManaPercent >= mana)
+                    {
+                        W.Cast();
+                        //Orbwalker.ResetAutoAttackTimer();
+                        Player.IssueOrder(GameObjectOrder.AttackUnit, targetz);
+                    }
+                }
             }
 
             if (ComboMenu["comboMode"].GetValue<MenuList>().Index == 1)
@@ -278,29 +298,7 @@ namespace Jax
 
         public static void ResetAttack(object e, OrbwalkerActionArgs args)
         {
-            if (!(e is AIHeroClient)) return;
-            var target = TargetSelector.GetTarget(300, DamageType.Physical);
-            var champ = (AIHeroClient)e;
-            var useW = ComboMenu["ComboW"].GetValue<MenuBool>().Enabled;
-            var HasW = HarassMenu["HarassW"].GetValue<MenuBool>().Enabled;
-            var mana = HarassMenu["ManaQ"].GetValue<MenuSlider>().Value;
-            if (champ == null || champ.Type != GameObjectType.AIHeroClient || !champ.IsValid) return;
-            if (target != null)
-            {
-                if (useW && W.IsReady() && Orbwalker.ActiveMode.HasFlag(OrbwalkerMode.Combo))
-                {
-                    W.Cast();
-                    Orbwalker.ResetAutoAttackTimer();
-                    Player.IssueOrder(GameObjectOrder.AttackUnit, target);
-                }
-
-                if (HasW && W.IsReady() && Orbwalker.ActiveMode.HasFlag(OrbwalkerMode.Harass) && _Player.ManaPercent >= mana)
-                {
-                    W.Cast();
-                    Orbwalker.ResetAutoAttackTimer();
-                    Player.IssueOrder(GameObjectOrder.AttackUnit, target);
-                }
-            }
+            
         }
 
         public static void JungleClear()
