@@ -44,9 +44,9 @@ namespace Ekko
             Chat.Print("Victorious Ekko Loaded! PORT By DEATHGODX", Color.White);
             EkkoREmitter = ObjectManager.Get<EffectEmitter>().FirstOrDefault(x => x.Name.Equals("Ekko_Base_R_TrailEnd.troy"));
             Q = new Spell(SpellSlot.Q, 850);
-            Q.SetSkillshot(250, 2200, 60, false, SkillshotType.Line);
+            Q.SetSkillshot(250, 2200, 60, false, false, SkillshotType.Line);
             W = new Spell(SpellSlot.W, 1600);
-            W.SetSkillshot(1500, 500, 650, false, SkillshotType.Circle);
+            W.SetSkillshot(1500, 500, 650, false, false, SkillshotType.Circle);
             E = new Spell(SpellSlot.E, 450);
             R = new Spell(SpellSlot.R, 375);
             Thm = new Font(Drawing.Direct3DDevice, new FontDescription { FaceName = "Tahoma", Height = 16, Weight = FontWeight.Bold, OutputPrecision = FontPrecision.Default, Quality = FontQuality.ClearType });
