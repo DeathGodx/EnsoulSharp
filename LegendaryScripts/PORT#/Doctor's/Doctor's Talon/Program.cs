@@ -43,7 +43,7 @@ namespace Talon7
             Bootstrap.Init(null);
             Q = new Spell(SpellSlot.Q, 500);
             W = new Spell(SpellSlot.W, 750);
-            W.SetSkillshot(1, 2300, 80, false, SkillshotType.Cone);
+            W.SetSkillshot(1, 2300, 80, false, false, SkillshotType.Cone);
             R = new Spell(SpellSlot.R);
             Botrk = new Item(ItemId.Blade_of_the_Ruined_King, 400);
             Tiamat = new Item(ItemId.Tiamat_Melee_Only, 400);
