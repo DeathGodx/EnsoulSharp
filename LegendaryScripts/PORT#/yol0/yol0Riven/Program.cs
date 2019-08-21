@@ -107,8 +107,8 @@ namespace yol0Riven
             //TargetSelector.AddToMenu(_menu.SubMenu("Target Selector"));
             //Utility.HpBarDamageIndicator.DamageToUnit = GetDamage;
 
-            _R.SetSkillshot(0.25f, 60f, 2200, false, SkillshotType.Cone);
-            _E.SetSkillshot(0, 0, 1450, false, SkillshotType.Line);
+            _R.SetSkillshot(0.25f, 60f, 2200, false,false, SkillshotType.Cone);
+            _E.SetSkillshot(0, 0, 1450, false,false, SkillshotType.Line);
 
             Game.OnUpdate += OnUpdate;
             Orbwalker.OnAction += BeforeAttack;
