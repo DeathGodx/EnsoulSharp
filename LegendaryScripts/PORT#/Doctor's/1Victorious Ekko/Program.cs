@@ -367,7 +367,7 @@ namespace Ekko
                         {
                             if (Player.CastSpell(SpellSlot.E, target.Position))
                             {
-                                Orbwalker.ResetAutoAttackTimer();
+                               // Orbwalker.ResetAutoAttackTimer();
                                 Player.IssueOrder(GameObjectOrder.AttackUnit, target);
                                 return;
                             }
@@ -377,7 +377,7 @@ namespace Ekko
                     {
                         if (Player.CastSpell(SpellSlot.E, target.Position))
                         {
-                            Orbwalker.ResetAutoAttackTimer();
+                           // Orbwalker.ResetAutoAttackTimer();
                             Player.IssueOrder(GameObjectOrder.AttackUnit, target);
                             return;
                         }
@@ -440,7 +440,7 @@ namespace Ekko
                             {
                                 if (Player.CastSpell(SpellSlot.E, target.Position))
                                 {
-                                    Orbwalker.ResetAutoAttackTimer();
+                                   // Orbwalker.ResetAutoAttackTimer();
                                     //Core.DelayAction(() => EloBuddy.Player.IssueOrder(GameObjectOrder.AttackUnit, target), 500);
                                     Player.IssueOrder(GameObjectOrder.AttackUnit, target);
                                     return;
@@ -452,7 +452,7 @@ namespace Ekko
                         {
                             if (Player.CastSpell(SpellSlot.E, target.Position))
                             {
-                                Orbwalker.ResetAutoAttackTimer();
+                               // Orbwalker.ResetAutoAttackTimer();
                                 Player.IssueOrder(GameObjectOrder.AttackUnit, target);
                                 return;
                             }
@@ -466,7 +466,7 @@ namespace Ekko
                                 {
                                     if (Player.CastSpell(SpellSlot.E, Game.CursorPosCenter)) ;
                                     {
-                                        Orbwalker.ResetAutoAttackTimer();
+                                       // Orbwalker.ResetAutoAttackTimer();
                                         Player.IssueOrder(GameObjectOrder.AttackUnit, target);
                                         return;
                                     }
@@ -477,7 +477,7 @@ namespace Ekko
                         {
                             if (Player.CastSpell(SpellSlot.E, Game.CursorPosCenter))
                             {
-                                Orbwalker.ResetAutoAttackTimer();
+                               // Orbwalker.ResetAutoAttackTimer();
                                 Player.IssueOrder(GameObjectOrder.AttackUnit, target);
                                 return;
                             }
@@ -517,7 +517,7 @@ namespace Ekko
                     {
                         if (Player.CastSpell(SpellSlot.E, minion.Position))
                         {
-                            Orbwalker.ResetAutoAttackTimer();
+                           // Orbwalker.ResetAutoAttackTimer();
                             Player.IssueOrder(GameObjectOrder.AttackUnit, minion);
                             return;
                         }
@@ -543,24 +543,26 @@ namespace Ekko
 
             if (monster != null)
             {
-                if (useQ && Q.CanCast(monster) && Q.IsReady())
+                if (useQ && Q.IsReady())
                 {
                     Q.Cast(monster.Position);
                 }
 
-                if (useW && W.IsReady() && monster.IsValidTarget(Q.Range) && W.IsReady())
+                if (useW && monster.IsValidTarget(W.Range) && W.IsReady())
                 {
                     W.Cast(monster.Position);
                 }
 
-                if (useE && E.CanCast(monster) && E.IsReady())
+                if (useE  && E.IsReady())
                 {
-                    if (Player.CastSpell(SpellSlot.E, monster.Position))
-                    {
-                        Orbwalker.ResetAutoAttackTimer();
-                        Player.IssueOrder(GameObjectOrder.AttackUnit, monster);
-                        return;
-                    }
+                    //Player.CastSpell(SpellSlot.E, monster.Position);
+                    //E.CanCast(monster);
+                    //if (Player.CastSpell(SpellSlot.E, monster.Position))
+
+                    // Orbwalker.ResetAutoAttackTimer();
+                    // Player.IssueOrder(GameObjectOrder.AttackUnit, monster);
+
+
                 }
             }
         }
@@ -598,7 +600,7 @@ namespace Ekko
                     {
                         if (Player.CastSpell(SpellSlot.E, target.Position))
                         {
-                            Orbwalker.ResetAutoAttackTimer();
+                           // Orbwalker.ResetAutoAttackTimer();
                             Player.IssueOrder(GameObjectOrder.AttackUnit, target);
                             return;
                         }
