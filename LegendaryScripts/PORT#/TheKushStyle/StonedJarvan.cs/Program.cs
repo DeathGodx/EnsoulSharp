@@ -67,7 +67,7 @@ namespace StonedJarvan
             ComboMenu.Add(new MenuBool("UseECombo", "Use E"));
             ComboMenu.Add(new MenuBool("UseEQCombo", "Use EQ"));
             ComboMenu.Add(new MenuBool("UseRCombo", "Use R"));
-            ComboMenu.Add(new MenuKeyBind("ActiveCombo", "Combo!", System.Windows.Forms.Keys.Space, KeyBindType.Press));
+            ComboMenu.Add(new MenuKeyBind("ActiveCombo", "Combo!", System.Windows.Forms.Keys.Space, KeyBindType.Press)).Permashow();
             Menu.Add(ComboMenu);
             LaneMenu = new Menu("Laneclear Settings", "Clear");
             LaneMenu.Add(new MenuSeparator("Laneclear Settings", "Laneclear Settings"));
