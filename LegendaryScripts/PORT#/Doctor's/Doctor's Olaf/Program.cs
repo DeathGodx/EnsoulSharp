@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System;
 using System.Collections.Generic;
@@ -40,7 +40,7 @@ namespace Olaf7
 
         static void Main(string[] args)
         {
-            GameEvent.OnGameLoad+= OnLoadingComplete;
+            GameEvent.OnGameLoad += OnLoadingComplete;
         }
 
         static void OnLoadingComplete()
@@ -77,29 +77,6 @@ namespace Olaf7
             HarassMenu.Add(new MenuBool("HarassE", "Use [E]"));
             HarassMenu.Add(new MenuSlider("ManaQ", "Min Mana For Harass", 40));
             MenuOlaf.Add(HarassMenu);
-            LaneClearMenu = new Menu("LaneClear Settings", "LaneClear");
-            LaneClearMenu.Add(new MenuSeparator("LaneClear Settings", "LaneClear Settings"));
-            LaneClearMenu.Add(new MenuBool("ClearQ", "Use [Q]"));
-            LaneClearMenu.Add(new MenuBool("CantLC", "Only [Q] If Orbwalker Cant Killable Minion", false));
-            LaneClearMenu.Add(new MenuSlider("minQ", "Min Hit Minions Use [Q]", 3, 1, 6));
-            LaneClearMenu.Add(new MenuBool("ClearE", "Use [E]"));
-            LaneClearMenu.Add(new MenuBool("ClearW", "Use [W]", false));
-            LaneClearMenu.Add(new MenuSlider("ManaLC", "Min Mana For LaneClear", 60));
-            MenuOlaf.Add(LaneClearMenu);
-            LastHitMenu = new Menu("LastHit Settings", "LastHit");
-            LastHitMenu.Add(new MenuSeparator("LastHit Settings", "LastHit Settings"));
-            LastHitMenu.Add(new MenuBool("LastQ", "Use [Q] LastHit", false));
-            LastHitMenu.Add(new MenuBool("LhAA", "Only [Q] If Orbwalker Cant Killable Minion"));
-            LastHitMenu.Add(new MenuBool("LastE", "Use [E] LastHit"));
-            LastHitMenu.Add(new MenuSlider("LhMana", "Min Mana For LastHit", 60));
-            MenuOlaf.Add(LastHitMenu);
-            JungleClearMenu = new Menu("JungleClear Settings", "JungleClear");
-            JungleClearMenu.Add(new MenuSeparator("JungleClear Settings", "JungleClear Settings"));
-            JungleClearMenu.Add(new MenuBool("QJungle", "Use [Q]"));
-            JungleClearMenu.Add(new MenuBool("WJungle", "Use [W]"));
-            JungleClearMenu.Add(new MenuBool("EJungle", "Use [E]"));
-            JungleClearMenu.Add(new MenuSlider("MnJungle", "Min Mana JungleClear", 30));
-            MenuOlaf.Add(JungleClearMenu);
             Misc = new Menu("Ultimate Settings", "Misc");
             Misc.Add(new MenuBool("Ulti", "Use Ultimate"));
             Misc.Add(new MenuSeparator("Use [R] On", "Use [R] On"));
@@ -127,6 +104,29 @@ namespace Olaf7
             Misc.Add(new MenuSeparator("Ultimate Delay", "Ultimate Delay"));
             Misc.Add(new MenuSlider("delay", "Humanizer Delay", 0, 0, 1000));
             MenuOlaf.Add(Misc);
+            LaneClearMenu = new Menu("LaneClear Settings", "LaneClear");
+            LaneClearMenu.Add(new MenuSeparator("LaneClear Settings", "LaneClear Settings"));
+            LaneClearMenu.Add(new MenuBool("ClearQ", "Use [Q]"));
+            LaneClearMenu.Add(new MenuBool("CantLC", "Only [Q] If Orbwalker Cant Killable Minion", false));
+            LaneClearMenu.Add(new MenuSlider("minQ", "Min Hit Minions Use [Q]", 3, 1, 6));
+            LaneClearMenu.Add(new MenuBool("ClearE", "Use [E]"));
+            LaneClearMenu.Add(new MenuBool("ClearW", "Use [W]", false));
+            LaneClearMenu.Add(new MenuSlider("ManaLC", "Min Mana For LaneClear", 60));
+            MenuOlaf.Add(LaneClearMenu);
+            LastHitMenu = new Menu("LastHit Settings", "LastHit");
+            LastHitMenu.Add(new MenuSeparator("LastHit Settings", "LastHit Settings"));
+            LastHitMenu.Add(new MenuBool("LastQ", "Use [Q] LastHit", false));
+            LastHitMenu.Add(new MenuBool("LhAA", "Only [Q] If Orbwalker Cant Killable Minion"));
+            LastHitMenu.Add(new MenuBool("LastE", "Use [E] LastHit"));
+            LastHitMenu.Add(new MenuSlider("LhMana", "Min Mana For LastHit", 60));
+            MenuOlaf.Add(LastHitMenu);
+            JungleClearMenu = new Menu("JungleClear Settings", "JungleClear");
+            JungleClearMenu.Add(new MenuSeparator("JungleClear Settings", "JungleClear Settings"));
+            JungleClearMenu.Add(new MenuBool("QJungle", "Use [Q]"));
+            JungleClearMenu.Add(new MenuBool("WJungle", "Use [W]"));
+            JungleClearMenu.Add(new MenuBool("EJungle", "Use [E]"));
+            JungleClearMenu.Add(new MenuSlider("MnJungle", "Min Mana JungleClear", 30));
+            MenuOlaf.Add(JungleClearMenu);
             KillStealMenu = new Menu("KillSteal Settings", "KillSteal");
             KillStealMenu.Add(new MenuSeparator("KillSteal Settings", "KillSteal Settings"));
             KillStealMenu.Add(new MenuBool("KsQ", "Use [Q] KillSteal"));
@@ -205,13 +205,13 @@ namespace Olaf7
             RStun();
             Ult();
 
-           /* if (_Player.SkinId != Skin["skin.Id"].GetValue<MenuList>().Index)
-            {
-                if (checkSkin())
-                {
-                    Player.SetSkinId(SkinId());
-                }
-            }*/
+            /* if (_Player.SkinId != Skin["skin.Id"].GetValue<MenuList>().Index)
+             {
+                 if (checkSkin())
+                 {
+                     Player.SetSkinId(SkinId());
+                 }
+             }*/
         }
 
         public static int SkinId()
@@ -347,22 +347,22 @@ namespace Olaf7
             var quang = W.GetLineFarmLocation(minionE, W.Width);
             if (quang.Position.IsValid())
                 foreach (var minion in minionE)
-            {
-                if (useW && W.IsReady() && Player.Instance.ManaPercent >= mana && minion.IsValidTarget(E.Range))
                 {
-                    W.Cast();
-                }
+                    if (useW && W.IsReady() && Player.Instance.ManaPercent >= mana && minion.IsValidTarget(E.Range))
+                    {
+                        W.Cast();
+                    }
 
-                if (useE && E.IsReady() && !minion.IsValidTarget(_Player.AttackRange) && minion.Health <= Player.Instance.GetSpellDamage(minion, SpellSlot.E))
-                {
-                    E.Cast(minion);
-                }
+                    if (useE && E.IsReady() && !minion.IsValidTarget(_Player.AttackRange) && minion.Health <= Player.Instance.GetSpellDamage(minion, SpellSlot.E))
+                    {
+                        E.Cast(minion);
+                    }
 
-                if (useQ && Q.IsReady() && Player.Instance.ManaPercent >= mana && minion.IsValidTarget(600))
-                {
-                    Q.Cast(minion.Position);
+                    if (useQ && Q.IsReady() && Player.Instance.ManaPercent >= mana && minion.IsValidTarget(600))
+                    {
+                        Q.Cast(minion.Position);
+                    }
                 }
-            }
         }
 
         private static void Orbwalker_CantLasthit(object target, OrbwalkerActionArgs args)
