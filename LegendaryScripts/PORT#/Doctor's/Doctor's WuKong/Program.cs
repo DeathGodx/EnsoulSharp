@@ -56,7 +56,7 @@ namespace Doctor_s_WuKong
             ComboMenu.Add(new MenuBool("ComboW", "Use [W] Combo"));
             ComboMenu.Add(new MenuBool("ComboE", "Use [E] Combo"));
             ComboMenu.Add(new MenuSlider("DisE", "Use [E] If Enemy Distance >", 250, 0, 650));
-            ComboMenu.Add(new MenuKeyBind("CTurret", "Don't Use [E] UnderTurret", System.Windows.Forms.Keys.T, KeyBindType.Toggle));
+            ComboMenu.Add(new MenuKeyBind("CTurret", "Don't Use [E] UnderTurret", System.Windows.Forms.Keys.T, KeyBindType.Toggle)).Permashow();
             ComboMenu.Add(new MenuSeparator("Items Settings", "Items Settings"));
             ComboMenu.Add(new MenuBool("hydra", "Use [Hydra] Reset AA"));
             MenuWuk.Add(ComboMenu);
@@ -118,11 +118,11 @@ namespace Doctor_s_WuKong
 
         private static void Drawing_OnDraw(EventArgs args)
         {
-            if (Misc["DrawR"].GetValue<MenuBool>().Enabled)
+            if (Misc["DrawR"].GetValue<MenuBool>().Enabled && R.IsReady())
             {
                 Render.Circle.DrawCircle(ObjectManager.Player.Position, R.Range, Color.Black, 1);
             }
-            if (Misc["DrawE"].GetValue<MenuBool>().Enabled)
+            if (Misc["DrawE"].GetValue<MenuBool>().Enabled && E.IsReady())
             {
                 Render.Circle.DrawCircle(ObjectManager.Player.Position, E.Range, Color.Black, 1);
             }
@@ -245,7 +245,7 @@ namespace Doctor_s_WuKong
             var auto = Ulti["follow"].GetValue<MenuBool>().Enabled;
             var autow = Ulti["wulti"].GetValue<MenuBool>().Enabled;
             var mauW = Ulti["MauW"].GetValue<MenuSlider>().Value;
-            
+
 
             if (target != null)
             {
