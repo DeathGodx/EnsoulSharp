@@ -48,7 +48,7 @@ namespace Twitch
             Chat.Print("Doctor's Twitch Loaded! PORTED by DeathGODX", Color.Orange);
             Q = new Spell(SpellSlot.Q);
             W = new Spell(SpellSlot.W, 900);
-            W.SetSkillshot(250, 1550, 275, false, SkillshotType.Circle);
+            W.SetSkillshot(250, 1550, 275, false,false, SkillshotType.Circle);
             E = new Spell(SpellSlot.E, 1200);
             R = new Spell(SpellSlot.R);
             thm = new Font(Drawing.Direct3DDevice, new FontDescription { FaceName = "Tahoma", Height = 22, Weight = FontWeight.Bold, OutputPrecision = FontPrecision.Default, Quality = FontQuality.ClearType });
