@@ -49,9 +49,9 @@ namespace ChewyMoonsLux
             W = new Spell(SpellSlot.W, 1075);
             E = new Spell(SpellSlot.E, 1100);
             R = new Spell(SpellSlot.R, 3340);
-            Q.SetSkillshot(0.25f, 80f, 1200f, false, SkillshotType.Line); // to get collision objects
-            W.SetSkillshot(0.25f, 150f, 1200f, false, SkillshotType.Line);
-            R.SetSkillshot(1.35f, 190f, float.MaxValue, false, SkillshotType.Line);
+            Q.SetSkillshot(0.25f, 80f, 1200f, false, false, SkillshotType.Line); // to get collision objects
+            W.SetSkillshot(0.25f, 150f, 1200f, false,false, SkillshotType.Line);
+            R.SetSkillshot(1.35f, 190f, float.MaxValue, false,false, SkillshotType.Line);
             SetupMenu();
             Drawing.OnDraw += OnDraw;
             Gapcloser.OnGapcloser += QGapCloser.OnEnemyGapCloser;
