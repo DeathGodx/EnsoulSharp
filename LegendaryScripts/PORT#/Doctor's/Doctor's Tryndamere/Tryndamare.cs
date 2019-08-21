@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System;
 using System.Collections.Generic;
@@ -53,7 +53,7 @@ namespace Tryndamere
             Q = new Spell(SpellSlot.Q);
             W = new Spell(SpellSlot.W, 800);
             E = new Spell(SpellSlot.E, 660);
-            W.SetSkillshot(250, 700, 92, false,false, SkillshotType.Line);
+            W.SetSkillshot(250, 700, 92, false, false, SkillshotType.Line);
             R = new Spell(SpellSlot.R, 500);
             Ignite = new Spell(ObjectManager.Player.GetSpellSlot("summonerdot"), 600);
             thm = new Font(Drawing.Direct3DDevice, new FontDescription { FaceName = "Tahoma", Height = 15, Weight = FontWeight.Bold, OutputPrecision = FontPrecision.Default, Quality = FontQuality.ClearType });
@@ -111,15 +111,15 @@ namespace Tryndamere
             Misc = new Menu("Misc Settings", "Misc");
             Misc.Add(new MenuSeparator("Skin Settings", "Skin Settings"));
             Misc.Add(new MenuBool("checkSkin", "Use Skin Changer", false));
-            Misc.Add(new MenuSlider("skin.Id", "Skin Mode", 0,0,8));
+            Misc.Add(new MenuSlider("skin.Id", "Skin Mode", 0, 0, 8));
             Misc.Add(new MenuSeparator("Drawing Settings", "Drawing Settings"));
             Misc.Add(new MenuBool("DrawE", "E Range"));
             Misc.Add(new MenuBool("DrawW", "W Range"));
             Misc.Add(new MenuBool("Damage", "Damage Indicator"));
             Misc.Add(new MenuBool("DrawTR", "Draw Text Under Turret"));
             Misc.Add(new MenuBool("DrawTime", "Draw Time [R]"));
-                ObjectManager.Player.SetSkin(Misc["skin.Id"].GetValue<MenuSlider>().Value);
-                Misc["skin.Id"].GetValue<MenuSlider>().DisplayName = ObjectManager.Player.CharacterData.SkinName;
+            ObjectManager.Player.SetSkin(Misc["skin.Id"].GetValue<MenuSlider>().Value);
+            Misc["skin.Id"].GetValue<MenuSlider>().DisplayName = ObjectManager.Player.CharacterData.SkinName;
             MenuTryndamare.Add(Misc);
             MenuTryndamare.Attach();
             Drawing.OnDraw += Drawing_OnDraw;
@@ -187,7 +187,7 @@ namespace Tryndamere
             KillSteal();
             Ultimate();
 
-            
+
         }
 
         public static int SkinId()
@@ -317,22 +317,21 @@ namespace Tryndamere
                             Core.DelayAction(() => R.Cast(), 500);
                         }*/
                     }
-
-                    if (useQ && Q.IsReady() && Player.Instance.HasBuff("TryndamereQ") && RTime(Player.Instance) <= 1 && Player.Instance.Mana >= passive && (target.IsValidTarget(E.Range) || _Player.IsUnderEnemyTurret()))
+                }
+                if (useQ && Q.IsReady() && RTime(Player.Instance) <= 1 && Player.Instance.Mana >= passive)
+                {
+                    if (useQ2)
                     {
-                        if (useQ2)
+                        if (!R.IsReady() && (Player.Instance.HealthPercent <= mauQ || Player.Instance.HasBuff("ZedR")))
                         {
-                            if (!R.IsReady() && (Player.Instance.HealthPercent <= mauQ || Player.Instance.HasBuff("ZedR")))
-                            {
-                                Q.Cast();
-                            }
+                            Q.Cast();
                         }
-                        else
+                    }
+                    else
+                    {
+                        if ((Player.Instance.HealthPercent <= mauQ || Player.Instance.HasBuff("ZedR")))
                         {
-                            if ((Player.Instance.HealthPercent <= mauQ || Player.Instance.HasBuff("ZedR")))
-                            {
-                                Q.Cast();
-                            }
+                            Q.Cast();
                         }
                     }
                 }
@@ -373,12 +372,12 @@ namespace Tryndamere
             var ECanCast = W.GetLineFarmLocation(minionsx, W.Width);
             if (ECanCast.Position.IsValid())
                 foreach (var minion in minions)
-            {
-                if (useE && E.IsReady() && minion.IsValidTarget(E.Range) && ECanCast.MinionsHit >= minE)
                 {
-                    E.Cast(ECanCast.Position);
+                    if (useE && E.IsReady() && minion.IsValidTarget(E.Range) && ECanCast.MinionsHit >= minE)
+                    {
+                        E.Cast(ECanCast.Position);
+                    }
                 }
-            }
         }
 
         private static void Harass()
@@ -472,7 +471,7 @@ namespace Tryndamere
             {
                 if (KsE && E.IsReady() && target.IsValidTarget(E.Range))
                 {
-                    if (target.Health<= Player.Instance.GetSpellDamage(target, SpellSlot.E))
+                    if (target.Health <= Player.Instance.GetSpellDamage(target, SpellSlot.E))
                     {
                         E.Cast(target.Position);
                     }
