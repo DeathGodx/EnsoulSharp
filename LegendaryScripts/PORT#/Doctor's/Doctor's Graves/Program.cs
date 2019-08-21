@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using EnsoulSharp.SDK;
 using EnsoulSharp.SDK.MenuUI;
@@ -157,7 +157,7 @@ namespace Graves7
                 Harass();
             }
             KillSteal();
-            QStun();
+            //QStun();
             Item();
         }
 
