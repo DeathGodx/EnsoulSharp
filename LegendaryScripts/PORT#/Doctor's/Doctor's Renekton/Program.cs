@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using EnsoulSharp.SDK;
 using EnsoulSharp.SDK.MenuUI;
@@ -32,7 +32,7 @@ namespace Renekton7
 
         static void Main(string[] args)
         {
-           GameEvent.OnGameLoad += OnLoadingComplete;
+            GameEvent.OnGameLoad += OnLoadingComplete;
         }
 
         static void OnLoadingComplete()
@@ -106,7 +106,7 @@ namespace Renekton7
             Menurenek.Attach();
             Drawing.OnDraw += Drawing_OnDraw;
             Game.OnUpdate += Game_OnUpdate;
-            Orbwalker.OnAction += ResetAttack;
+            //Orbwalker.OnAction += ResetAttack;
         }
 
         private static void Drawing_OnDraw(EventArgs args)
@@ -155,7 +155,7 @@ namespace Renekton7
             {
                 Combo();
             }
-
+            Item();
             KillSteal();
             Ultimate();
         }
@@ -208,12 +208,12 @@ namespace Renekton7
             if (target != null)
             {
                 float Damage = 0;
-/*
-                if (Q.IsReady()) { Damage+= QDamage(target); }
-                if (E.IsReady()) { Damage += EDamage(); }
-                if (W.IsReady()) { Damage += WDamage(); }
+                /*
+                                if (Q.IsReady()) { Damage+= QDamage(target); }
+                                if (E.IsReady()) { Damage += EDamage(); }
+                                if (W.IsReady()) { Damage += WDamage(); }
 
-                return Damage;*/
+                                return Damage;*/
             }
             return 0;
         }
@@ -261,29 +261,27 @@ namespace Renekton7
             }
         }
 
-        public static void ResetAttack(object e, OrbwalkerActionArgs args)
+        public static void Item()
         {
-            if (!(e is AIHeroClient)) return;
             var target = TargetSelector.GetTarget(300, DamageType.Physical);
-            var champ = (AIHeroClient)e;
+
             var useriu = ComboMenu["hydra"].GetValue<MenuBool>().Enabled;
             var useW = ComboMenu["ComboW"].GetValue<MenuBool>().Enabled;
             var HasW = HarassMenu["HarassW"].GetValue<MenuBool>().Enabled;
-            if (champ == null || champ.Type != GameObjectType.AIHeroClient || !champ.IsValid) return;
             if (target != null)
             {
                 if (useW && W.IsReady() && Orbwalker.ActiveMode.HasFlag(OrbwalkerMode.Combo))
                 {
                     W.Cast();
-                    Orbwalker.ResetAutoAttackTimer();
-                    Player.IssueOrder(GameObjectOrder.AttackUnit, target);
+                    //Orbwalker.ResetAutoAttackTimer();
+                    //Player.IssueOrder(GameObjectOrder.AttackUnit, target);
                 }
 
                 if (HasW && W.IsReady() && Orbwalker.ActiveMode.HasFlag(OrbwalkerMode.Harass))
                 {
                     W.Cast();
-                    Orbwalker.ResetAutoAttackTimer();
-                    Player.IssueOrder(GameObjectOrder.AttackUnit, target);
+                    //Orbwalker.ResetAutoAttackTimer();
+                    //Player.IssueOrder(GameObjectOrder.AttackUnit, target);
                 }
 
                 if ((useriu) && (Orbwalker.ActiveMode.HasFlag(OrbwalkerMode.Combo) || Orbwalker.ActiveMode.HasFlag(OrbwalkerMode.Harass)))
