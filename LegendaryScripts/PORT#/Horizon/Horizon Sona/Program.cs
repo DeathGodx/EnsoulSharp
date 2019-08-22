@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using EnsoulSharp.SDK;
 using EnsoulSharp.SDK.MenuUI;
@@ -54,7 +54,7 @@ namespace The_Horizon_Sona
             _R = new Spell(SpellSlot.R, 900);//, SkillShotType.Linear, 250, 2400, 140);
             _Ignite = new Spell(ObjectManager.Player.GetSpellSlot("summonerdot"), 600);
             _FlashR = new Spell(SpellSlot.R, 1050);//, SkillShotType.Linear, 250, 2400, 140);
-            StartMenu = new Menu("The Horizon Sona", "The Horizon Sona");
+            StartMenu = new Menu("The Horizon Sona", "The Horizon Sona", true);
             ComboMenu = new Menu("Combo", "Combo");
             AHarrasMenu = new Menu("Auto Harras", "Auto Harras");
             DrawingsMenu = new Menu("Drawings", "Drawings");
@@ -199,12 +199,12 @@ namespace The_Horizon_Sona
             {
                 var Rpred = _R.GetPrediction(target);
 
-                if (Rpred.Hitchance >= HitChance.High && target.IsValidTarget(_R.Range))
+                _R.Cast(target.Position);
+                if (Rpred.Hitchance >= HitChance.VeryHigh && target.IsValidTarget(_R.Range))
                     if (!target.IsValidTarget(_R.Range) && _R.IsReady())
                         return;
                 {
 
-                    _R.Cast(Rpred.CastPosition);
 
 
 
@@ -317,11 +317,15 @@ namespace The_Horizon_Sona
                 if (_Flash.IsReady() && target.IsValidTarget() && _R.IsReady())
                 {
                     _Flash.Cast(Flashh.ToVector2());
-                    _FlashR.Cast(target);
+
+                    var Rpred = _R.GetPrediction(target);
+
+                    _R.Cast(target.Position);
+
                 }
             }
+
+
         }
-
-
     }
 }
