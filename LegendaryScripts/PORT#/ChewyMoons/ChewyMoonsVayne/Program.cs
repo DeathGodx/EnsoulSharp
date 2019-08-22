@@ -1,4 +1,4 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
+// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="Program.cs" company="ChewyMoon">
 //   Copyright (C) 2015 ChewyMoon
 //   
@@ -37,10 +37,6 @@ namespace ChewyVayne
     using Color = System.Drawing.Color;
     using static EnsoulSharp.SDK.Items;
     using SharpDX.Direct3D9;
-
-    using SharpDX;
-    using SPrediction;
-
     /// <summary>
     ///     The program class.
     /// </summary>
@@ -55,7 +51,7 @@ namespace ChewyVayne
         ///     The E spell.
         /// </value>
         private static Spell E { get; set; }
-
+        public static Spell Ignite;
         /// <summary>
         ///     Gets or sets the menu.
         /// </summary>
@@ -63,7 +59,7 @@ namespace ChewyVayne
         ///     The menu.
         /// </value>
         private static Menu Menu { get; set; }
-
+        public static Menu comboMenu, harassMenu, laneClear, fleeMenu, ksMenu, miscMenu, condemnMenu, waveClearMenu, drawMenu, Items;
         /// <summary>
         ///     Gets or sets the orbwalker.
         /// </summary>
@@ -78,6 +74,16 @@ namespace ChewyVayne
         /// <value>
         ///     The player.
         /// </value>
+        public static Item Botrk;
+        public static Item Hydra;
+        public static Item Tiamat;
+        public static Item Bil;
+        public static Item Youmuu;
+        public static AIHeroClient _Player
+        {
+            get { return ObjectManager.Player; }
+        }
+
         private static AIHeroClient Player
         {
             get
@@ -114,7 +120,7 @@ namespace ChewyVayne
             Justification = "Reviewed. Suppression is OK here.")]
         private static void AntiGapcloser_OnEnemyGapcloser(AIHeroClient sender, Gapcloser.GapcloserArgs args)
         {
-            if (!sender.IsValidTarget(E.Range) || !Menu["GapcloseE"].GetValue<MenuBool>())
+            if (!sender.IsValidTarget(E.Range) || !condemnMenu["GapcloseE"].GetValue<MenuBool>())
             {
                 return;
             }
@@ -138,36 +144,36 @@ namespace ChewyVayne
 
             var knockbackPos = startPos.Extend(
                 target.Position,
-                startPos.Distance(target.Position) + Menu["EDistance"].GetValue<MenuSlider>().Value);
+                startPos.Distance(target.Position) + condemnMenu["EDistance"].GetValue<MenuSlider>().Value);
 
             var flags = NavMesh.GetCollisionFlags(knockbackPos);
             var collision = flags.HasFlag(CollisionFlags.Building) || flags.HasFlag(CollisionFlags.Wall);
 
-            if (!casting || !Menu["Wardbush"].GetValue<MenuBool>() || !NavMesh.IsWallOfGrass(knockbackPos, 200))
+            if (!casting || !condemnMenu["Wardbush"].GetValue<MenuBool>() || !NavMesh.IsWallOfGrass(knockbackPos, 200))
             {
                 return collision;
             }
 
-           // var wardItem = Items.GetWardSlot();
+            // var wardItem = Items.GetWardSlot();
 
-            if (!Menu["Wardbush"].GetValue<MenuBool>())
+            if (!condemnMenu["Wardbush"].GetValue<MenuBool>())
             {
                 return collision;
             }
 
-           /* if (wardItem != default(InventorySlot))
-            {
-                Player.Spellbook.CastSpell(wardItem.SpellSlot, knockbackPos);
-            }
-            else if (Items.CanUseItem(ItemData.Scrying_Orb_Trinket.Id))
-            {
-                Items.UseItem(ItemData.Scrying_Orb_Trinket.Id, knockbackPos);
-            }
-            else if (Items.CanUseItem(ItemData.Farsight_Orb_Trinket.Id))
-            {
-                Items.UseItem(ItemData.Farsight_Orb_Trinket.Id, knockbackPos);
-            }
-            */
+            /* if (wardItem != default(InventorySlot))
+             {
+                 Player.Spellbook.CastSpell(wardItem.SpellSlot, knockbackPos);
+             }
+             else if (Items.CanUseItem(ItemData.Scrying_Orb_Trinket.Id))
+             {
+                 Items.UseItem(ItemData.Scrying_Orb_Trinket.Id, knockbackPos);
+             }
+             else if (Items.CanUseItem(ItemData.Farsight_Orb_Trinket.Id))
+             {
+                 Items.UseItem(ItemData.Farsight_Orb_Trinket.Id, knockbackPos);
+             }
+             */
             return collision;
         }
 
@@ -179,13 +185,11 @@ namespace ChewyVayne
             Menu = new Menu("ChewyVayne XD", "cmVayne", true);
 
             // Target Selector
-            var tsMenu = new Menu("Target Selector", "TS");
-            TargetSelector.GetTarget(tsMenu);
-            Menu.Add(tsMenu);
+
 
 
             // Combo
-            var comboMenu = new Menu("Combo", "C-C-Combo Breaker!");
+            comboMenu = new Menu("Combo", "C-C-Combo Breaker!");
             comboMenu.Add(new MenuBool("UseQCombo", "Use Q"));
             comboMenu.Add(new MenuBool("UseECombo", "Use E"));
             comboMenu.Add(new MenuBool("UseRCombo", "Use R"));
@@ -193,18 +197,18 @@ namespace ChewyVayne
             Menu.Add(comboMenu);
 
             // Harass
-            var harassMenu = new Menu("Harass", "Herass XD");
+            harassMenu = new Menu("Harass", "Herass XD");
             harassMenu.Add(new MenuBool("UseQHarass", "Use Q"));
             harassMenu.Add(new MenuBool("UseEHarass", "Use E"));
             Menu.Add(harassMenu);
 
             // Wave Clear
-            var waveClearMenu = new Menu("Wave Clear", "waveclearino");
+            waveClearMenu = new Menu("Wave Clear", "Waveclearino");
             waveClearMenu.Add(new MenuBool("UseQWaveClear", "Use Q"));
             Menu.Add(waveClearMenu);
 
             // Condemn Settings
-            var condemnMenu = new Menu("Condemn Settings", "ConDAMM_Settings");
+            condemnMenu = new Menu("Condemn Settings", "ConDAMM Settings");
             condemnMenu.Add(new MenuSlider("EDistance", "E Push Distance", 450, 300, 600));
             condemnMenu.Add(new MenuBool("QIntoE", "Q to E target"));
             condemnMenu.Add(new MenuBool("EPeel", "Peel with E"));
@@ -213,16 +217,22 @@ namespace ChewyVayne
             condemnMenu.Add(new MenuBool("InterruptE", "E to Interrupt"));
             condemnMenu.Add(new MenuBool("Wardbush", "Ward bush on E"));
             Menu.Add(condemnMenu);
-
+            Items = new Menu("Items Settings", "Items");
+            Items.Add(new MenuSeparator("Items Settings", "Items Settings"));
+            Items.Add(new MenuBool("you", "Use [Youmuu]"));
+            Items.Add(new MenuBool("BOTRK", "Use [BOTRK]"));
+            Items.Add(new MenuSlider("ihp", "My HP Use BOTRK <=", 50));
+            Items.Add(new MenuSlider("ihpp", "Enemy HP Use BOTRK <=", 50));
+            Menu.Add(Items);
             // Drawing
-            var drawMenu = new Menu("Drawing", "Drawing");
+            drawMenu = new Menu("Drawing", "Drawing");
             drawMenu.Add(new MenuBool("DrawQ", "Draw Q"));
             drawMenu.Add(new MenuBool("DrawE", "Draw E"));
             drawMenu.Add(new MenuBool("DrawEPos", "Draw Condemn Location"));
             Menu.Add(drawMenu);
             Menu.Attach();
             // Version info
-            Menu.Add(new MenuBool("VersionInformation","Version: " + Assembly.GetAssembly(typeof(Program)).GetName().Version));
+            Menu.Add(new MenuBool("VersionInformation", "Version: " + Assembly.GetAssembly(typeof(Program)).GetName().Version));
 
             // Author
             Menu.Add(new MenuBool("Author", "By ChevyMoon & DEATHGODX"));
@@ -233,37 +243,22 @@ namespace ChewyVayne
         /// </summary>
         private static void DoCombo()
         {
-            var useQ = Menu["UseQCombo"].GetValue<MenuBool>();
-            var useE = Menu["UseECombo"].GetValue<MenuBool>();
-            var useEPeel = Menu["EPeel"].GetValue<MenuBool>();
-            var qIntoE = Menu["QIntoE"].GetValue<MenuBool>();
-            var useR = Menu["UseRCombo"].GetValue<MenuBool>();
-            var useREnemies = Menu["RComboEnemies"].GetValue<MenuSlider>().Value;
-            var useEFinisher = Menu["EKS"].GetValue<MenuBool>();
+            var useQ = comboMenu["UseQCombo"].GetValue<MenuBool>().Enabled;
+            var useE = comboMenu["UseECombo"].GetValue<MenuBool>().Enabled;
+            var useEPeel = condemnMenu["EPeel"].GetValue<MenuBool>().Enabled;
+            var qIntoE = condemnMenu["QIntoE"].GetValue<MenuBool>().Enabled;
+            var useR = comboMenu["UseRCombo"].GetValue<MenuBool>().Enabled;
+            var useREnemies = comboMenu["RComboEnemies"].GetValue<MenuSlider>().Value;
+            var useEFinisher = condemnMenu["EKS"].GetValue<MenuBool>().Enabled;
 
-            var target = TargetSelector.GetTarget(
-                Player.GetRealAutoAttackRange(Player) + 300,
-                DamageType.Physical);
+            var target = TargetSelector.GetTarget(800);
 
             if (!target.IsValidTarget())
             {
                 return;
             }
 
-            if (qIntoE && Q.IsReady() && E.IsReady() && !CanCondemnStun(target, default(Vector3), false))
-            {
-                var predictedPosition = Player.Position.Extend(Game.CursorPosRaw, Q.Range);
-
-                if (predictedPosition.Distance(target.Position) < E.Range
-                    && CanCondemnStun(target, predictedPosition))
-                {
-                    Q.Cast(predictedPosition);
-                    DelayAction.Add((int)(Q.Delay * 1000 + Game.Ping / 2f), () => E.Cast(target));
-                }
-            }
-
-            if (Q.IsReady() && useQ && !Orbwalker.CanAttack()
-                && Player.Distance(target) > Player.GetRealAutoAttackRange(Player))
+            if (Q.IsReady() && useQ && target.IsValidTarget(600))
             {
                 Q.Cast(target.Position);
             }
@@ -294,10 +289,9 @@ namespace ChewyVayne
         /// </summary>
         private static void DoHarass()
         {
-            var useE = Menu["UseEHarass"].GetValue<MenuBool>();
-
+            var useQ = harassMenu["UseQHarass"].GetValue<MenuBool>().Enabled;
+            var useE = harassMenu["UseEHarass"].GetValue<MenuBool>().Enabled;
             var target = TargetSelector.GetTarget(E.Range, DamageType.Physical);
-
             if (!target.IsValidTarget())
             {
                 return;
@@ -307,6 +301,10 @@ namespace ChewyVayne
             {
                 E.Cast(target);
             }
+            if (useQ && Q.IsReady() && target.IsValidTarget(600))
+            {
+                Q.Cast(target.Position);
+            }
         }
 
         /// <summary>
@@ -315,16 +313,16 @@ namespace ChewyVayne
         /// <param name="args">The <see cref="EventArgs" /> instance containing the event data.</param>
         private static void DrawingOnOnDraw(EventArgs args)
         {
-            var drawQ = Menu["DrawQ"].GetValue<MenuBool>();
-            var drawE = Menu["DrawE"].GetValue<MenuBool>();
-            var drawEPos = Menu["DrawEPos"].GetValue<MenuBool>();
+            var drawQ = drawMenu["DrawQ"].GetValue<MenuBool>().Enabled;
+            var drawE = drawMenu["DrawE"].GetValue<MenuBool>().Enabled;
+            var drawEPos = drawMenu["DrawEPos"].GetValue<MenuBool>().Enabled;
 
-            if (drawQ)
+            if (drawQ && Q.IsReady())
             {
                 Render.Circle.DrawCircle(Player.Position, Q.Range, Q.IsReady() ? Color.Aqua : Color.Red);
             }
 
-            if (drawE)
+            if (drawE && E.IsReady())
             {
                 Render.Circle.DrawCircle(Player.Position, E.Range, E.IsReady() ? Color.Aqua : Color.Red);
             }
@@ -335,7 +333,7 @@ namespace ChewyVayne
                 {
                     var knockbackPos = Player.Position.Extend(
                         enemy.Position,
-                        Player.Distance(enemy) + Menu["EDistance"].GetValue<MenuSlider>().Value);
+                        Player.Distance(enemy) + condemnMenu["EDistance"].GetValue<MenuSlider>().Value);
 
                     var flags = NavMesh.GetCollisionFlags(knockbackPos);
 
@@ -364,7 +362,12 @@ namespace ChewyVayne
             Q = new Spell(SpellSlot.Q, 300);
             E = new Spell(SpellSlot.E, 550);
             R = new Spell(SpellSlot.R);
-
+            Botrk = new Item(ItemId.Blade_of_the_Ruined_King, 400);
+            Tiamat = new Item(ItemId.Tiamat_Melee_Only, 400);
+            Hydra = new Item(ItemId.Ravenous_Hydra_Melee_Only, 400);
+            Bil = new Item(3144, 475f);
+            Youmuu = new Item(3142, 10);
+            Ignite = new Spell(ObjectManager.Player.GetSpellSlot("summonerdot"), 600);
             //E.SetTargetted(0.25f, 1200);
 
             CreateMenu();
@@ -383,13 +386,23 @@ namespace ChewyVayne
             Gapcloser.OnGapcloser += AntiGapcloser_OnEnemyGapcloser;
             Interrupter.OnInterrupterSpell += Interrupter2OnOnInterruptableTarget;
         }
-
+        public static void Killsteal()
+            {
+            foreach (var target in GameObjects.EnemyHeroes.Where(hero => hero.IsValidTarget(500) && !hero.HasBuff("JudicatorIntervention") && !hero.HasBuff("kindredrnodeathbuff") && !hero.HasBuff("Undying Rage") && !hero.IsDead && !hero.IsZombie))
+                if (target.Health + target.AllShield<_Player.GetSummonerSpellDamage(target, SummonerSpell.Ignite))
+                    {
+                        Ignite.Cast(target);
+                    }
+}
         /// <summary>
         ///     Called when the game updates itself.
         /// </summary>
         /// <param name="args">The <see cref="EventArgs" /> instance containing the event data.</param>
+
         private static void GameOnOnUpdate(EventArgs args)
         {
+            Killsteal();
+            Item();
             switch (Orbwalker.ActiveMode)
             {
                 case OrbwalkerMode.Harass:
@@ -400,7 +413,31 @@ namespace ChewyVayne
                     break;
             }
         }
+        public static void Item()
+        {
+            var item = Items["BOTRK"].GetValue<MenuBool>().Enabled;
+            var yous = Items["you"].GetValue<MenuBool>().Enabled;
+            var Minhp = Items["ihp"].GetValue<MenuSlider>().Value;
+            var Minhpp = Items["ihpp"].GetValue<MenuSlider>().Value;
 
+            foreach (var target in GameObjects.EnemyHeroes.Where(e => e.IsValidTarget(475) && !e.IsDead))
+            {
+                if (item && Bil.IsReady && Bil.IsOwned() && Bil.IsInRange(target))
+                {
+                    Bil.Cast(target);
+                }
+
+                if ((item && Botrk.IsReady && Botrk.IsOwned() && target.IsValidTarget(475)))
+                {
+                    Botrk.Cast(target);
+                }
+
+                if (yous && Youmuu.IsReady && Youmuu.IsOwned() && _Player.Distance(target) < 325 && Orbwalker.ActiveMode.HasFlag(OrbwalkerMode.Combo))
+                {
+                    Youmuu.Cast();
+                }
+            }
+        }
         /// <summary>
         ///     Gets the value.
         /// </summary>
@@ -447,9 +484,9 @@ namespace ChewyVayne
                 return;
             }
 
-            if ((Orbwalker.ActiveMode == OrbwalkerMode.Combo && !Menu["UseQCombo"].GetValue<MenuBool>())
-                || (Orbwalker.ActiveMode == OrbwalkerMode.Harass && !Menu["UseQHarass"].GetValue<MenuBool>())
-                || (Orbwalker.ActiveMode == OrbwalkerMode.LaneClear && !Menu["UseQWaveClear"].GetValue<MenuBool>()))
+            if ((Orbwalker.ActiveMode == OrbwalkerMode.Combo)
+                || (Orbwalker.ActiveMode == OrbwalkerMode.Harass)
+                || (Orbwalker.ActiveMode == OrbwalkerMode.LaneClear))
             {
                 return;
             }
@@ -459,9 +496,9 @@ namespace ChewyVayne
             {
                 foreach (var minion in minions)
                     if (!minion.IsValidTarget(E.Range))
-                {
-                    return;
-                }
+                    {
+                        return;
+                    }
             }
 
             if (!(target is AIHeroClient) && Orbwalker.ActiveMode != OrbwalkerMode.LaneClear)
