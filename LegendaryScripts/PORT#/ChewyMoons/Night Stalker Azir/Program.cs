@@ -1,4 +1,4 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
+// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="Program.cs" company="ChewyMoon">
 //   Copyright (C) 2015 ChewyMoon
 //   
@@ -37,9 +37,7 @@ namespace Night_Stalker_Azir
     using Color = System.Drawing.Color;
     using static EnsoulSharp.SDK.Items;
     using SharpDX.Direct3D9;
-
-    using SharpDX;
-    using SPrediction;
+    
 
     /// <summary>
     ///     The program class.
@@ -117,7 +115,7 @@ namespace Night_Stalker_Azir
         ///     The menu.
         /// </value>
         private static Menu Menu { get; set; }
-
+        public static Menu comboMenu, harassMenu, laneClear, fleeMenu, ksMenu, miscMenu, insecMenu, drawingMenu;
         /// <summary>
         ///     Gets or sets the orbwalker.
         /// </summary>
@@ -177,7 +175,7 @@ namespace Night_Stalker_Azir
             Justification = "Reviewed. Suppression is OK here.")]
         private static void AntiGapcloser_OnEnemyGapcloser(AIHeroClient sender, Gapcloser.GapcloserArgs args)
         {
-            if (!Menu["UseRGapCloser"].GetValue<MenuBool>())
+            if (!miscMenu["UseRGapCloser"].GetValue<MenuBool>())
             {
                 return;
             }
@@ -195,52 +193,49 @@ namespace Night_Stalker_Azir
         {
             Menu = new Menu("Night Stalker Azir", "NSAzir", true);
 
-            var targetSelectorMenu = new Menu("Target Selector", "TS");
-            TargetSelector.GetTarget(targetSelectorMenu);
-            Menu.Add(targetSelectorMenu);
 
-            var comboMenu = new Menu("Combo Settings", "Combo");
+            comboMenu = new Menu("Combo Settings", "Combo");
             comboMenu.Add(new MenuBool("UseQCombo", "Use Q"));
             comboMenu.Add(new MenuBool("UseWCombo", "Use W"));
             comboMenu.Add(new MenuBool("UseECombo", "Use E to Get into AA Range"));
             comboMenu.Add(new MenuBool("UseRComboFinisher", "Use R if Killable"));
             Menu.Add(comboMenu);
-
-            var harassMenu = new Menu("Harass Settings", "Harass");
+            
+            harassMenu = new Menu("Harass Settings", "Harass");
             harassMenu.Add(new MenuBool("UseQHarass", "Use Q if not in Soldier AA Range"));
             harassMenu.Add(new MenuBool("UseWHarass", "Use W"));
-            harassMenu.Add(new MenuKeyBind("HarassToggle", "Harass! (Toggle)", System.Windows.Forms.Keys.C, KeyBindType.Toggle));
-            harassMenu.Add(new MenuSlider("HarassToggleMana", "Harass Mana (Toggle only)",0,50,100));
+            harassMenu.Add(new MenuKeyBind("HarassToggle", "Harass! (Toggle)", System.Windows.Forms.Keys.C, KeyBindType.Press)).Permashow();
+            harassMenu.Add(new MenuSlider("HarassToggleMana", "Harass Mana (Toggle only)", 0, 50, 100));
             Menu.Add(harassMenu);
 
-            var laneClear = new Menu("Lane Clear Settings", "LaneClear");
+            laneClear = new Menu("Lane Clear Settings", "LaneClear");
             laneClear.Add(new MenuBool("UseQLaneClear", "Use Q"));
             laneClear.Add(new MenuBool("UseWLaneClear", "Use W"));
-            laneClear.Add(new MenuSlider("LaneClearMana", "Lane Clear Mana Percent",0,50,100));
+            laneClear.Add(new MenuSlider("LaneClearMana", "Lane Clear Mana Percent", 0, 50, 100));
             Menu.Add(laneClear);
 
-            var fleeMenu = new Menu("Flee Settings", "Flee");
+            fleeMenu = new Menu("Flee Settings", "Flee");
             fleeMenu.Add(
-                new MenuList("FleeOption", "Flee Mode", new[] { "E -> Q", "Q -> E" }) {Index = 0 });
-            fleeMenu.Add(new MenuKeyBind("Flee", "Flee" , System.Windows.Forms.Keys.Z, KeyBindType.Toggle));
+                new MenuList("FleeOption", "Flee Mode", new[] { "E -> Q", "Q -> E" }) { Index = 0 });
+            fleeMenu.Add(new MenuKeyBind("Flee", "Flee", System.Windows.Forms.Keys.Z, KeyBindType.Press)).Permashow();
             Menu.Add(fleeMenu);
-
-            var ksMenu = new Menu("Kill Steal Settings", "KS");
+            
+            ksMenu = new Menu("Kill Steal Settings", "KS");
             ksMenu.Add(new MenuBool("UseQKS", "Use Q"));
             ksMenu.Add(new MenuBool("UseRKS", "Use R"));
             Menu.Add(ksMenu);
 
-            var miscMenu = new Menu("Miscellaneous Settings", "Misc");
+            miscMenu = new Menu("Miscellaneous Settings", "Misc");
             miscMenu.Add(new MenuBool("UseRInterrupt", "Interrupt with R"));
             miscMenu.Add(new MenuBool("UseRGapCloser", "Use R on Gapcloser"));
             Menu.Add(miscMenu);
 
-            var insecMenu = new Menu("Insec Settings", "Insec");
+            insecMenu = new Menu("Insec Settings", "Insec");
             insecMenu.Add(
-                new MenuKeyBind("InsecActive", "Insec! (Press)", System.Windows.Forms.Keys.Z, KeyBindType.Toggle));       
+                new MenuKeyBind("InsecActive", "Insec! (Press)", System.Windows.Forms.Keys.M, KeyBindType.Press)).Permashow();
             Menu.Add(insecMenu);
-
-            var drawingMenu = new Menu("Drawing Settings", "Drawing");
+            
+            drawingMenu = new Menu("Drawing Settings", "Drawing");
             drawingMenu.Add(new MenuBool("DrawQ", "Draw Q"));
             drawingMenu.Add(new MenuBool("DrawW", "Draw W"));
             drawingMenu.Add(new MenuBool("DrawE", "Draw E"));
@@ -292,10 +287,10 @@ namespace Night_Stalker_Azir
                 return;
             }
 
-            var useQCombo = Menu["UseQCombo"].GetValue<MenuBool>();
-            var useWCombo = Menu["UseWCombo"].GetValue<MenuBool>();
-            var useECombo = Menu["UseECombo"].GetValue<MenuBool>();
-            var useRComboFinisher = Menu["UseRComboFinisher"].GetValue<MenuBool>();
+            var useQCombo = comboMenu["UseQCombo"].GetValue<MenuBool>();
+            var useWCombo = comboMenu["UseWCombo"].GetValue<MenuBool>();
+            var useECombo = comboMenu["UseECombo"].GetValue<MenuBool>();
+            var useRComboFinisher = comboMenu["UseRComboFinisher"].GetValue<MenuBool>();
 
             if (W.IsReady() && useWCombo
                 && (W.IsInRange(target, W.Range + AzirSoldierAutoAttackRange)
@@ -346,7 +341,7 @@ namespace Night_Stalker_Azir
 
             if (toggleCall)
             {
-                var manaMenuSlider = Menu["HarassToggleMana"].GetValue<MenuSlider>().Value;
+                var manaMenuSlider = harassMenu["HarassToggleMana"].GetValue<MenuSlider>().Value;
 
                 if (Player.ManaPercent <= manaMenuSlider)
                 {
@@ -354,8 +349,8 @@ namespace Night_Stalker_Azir
                 }
             }
 
-            var useQHarass = Menu["UseQHarass"].GetValue<MenuBool>();
-            var useWHarass = Menu["UseWHarass"].GetValue<MenuBool>();
+            var useQHarass = harassMenu["UseQHarass"].GetValue<MenuBool>();
+            var useWHarass = harassMenu["UseWHarass"].GetValue<MenuBool>();
 
             if (useWHarass && W.IsReady() && W.IsInRange(target, W.Range + AzirSoldierAutoAttackRange))
             {
@@ -434,42 +429,30 @@ namespace Night_Stalker_Azir
         /// </summary>
         private static void DoLaneClear()
         {
-            var manaPercentage = Menu["LaneClearMana"].GetValue<MenuSlider>().Value;
+            var manaPercentage = laneClear["LaneClearMana"].GetValue<MenuSlider>().Value;
 
             if (Player.ManaPercent <= manaPercentage)
             {
                 return;
             }
 
-            var useQLaneClear = Menu["UseQLaneClear"].GetValue<MenuBool>();
-            var useWLaneClear = Menu["UseWLaneClear"].GetValue<MenuBool>();
+            var useQLaneClear = laneClear["UseQLaneClear"].GetValue<MenuBool>();
+            var useWLaneClear = laneClear["UseWLaneClear"].GetValue<MenuBool>();
 
             if (useWLaneClear && W.IsReady())
             {
-                var position = W.GetCircularFarmLocation(
-                    MinionManager.GetMinions(W.Range + AzirSoldierAutoAttackRange),
-                    AzirSoldierAutoAttackRange);
+                    //MinionManager.GetMinions(W.Range + AzirSoldierAutoAttackRange),
+                    //AzirSoldierAutoAttackRange);
 
-                if (position.MinionsHit > 1)
-                {
-                    W.Cast(position.Position);
-                }
+      
             }
 
-            if (useQLaneClear && (Q.IsReady() )
-                && SandSoldiers.Any(
-                    x =>
-                    MinionManager.GetMinions(x.Position, AzirSoldierAutoAttackRange)
-                        .All(y => y.Distance(x) > AzirSoldierAutoAttackRange)))
+            if (useQLaneClear && (Q.IsReady())
+                )
             {
-                var position = Q.GetCircularFarmLocation(
-                    MinionManager.GetMinions(Q.Range + AzirSoldierAutoAttackRange),
-                    AzirSoldierAutoAttackRange);
+              
 
-                if (position.MinionsHit > 1)
-                {
-                    Q.Cast(position.Position);
-                }
+                
             }
         }
 
@@ -479,10 +462,10 @@ namespace Night_Stalker_Azir
         /// <param name="args">The <see cref="EventArgs" /> instance containing the event data.</param>
         private static void Drawing_OnDraw(EventArgs args)
         {
-            var drawQ = Menu["DrawQ"].GetValue<MenuBool>();
-            var drawW = Menu["DrawW"].GetValue<MenuBool>();
-            var drawE = Menu["DrawE"].GetValue<MenuBool>();
-            var drawR = Menu["DrawR"].GetValue<MenuBool>();
+            var drawQ = drawingMenu["DrawQ"].GetValue<MenuBool>();
+            var drawW = drawingMenu["DrawW"].GetValue<MenuBool>();
+            var drawE = drawingMenu["DrawE"].GetValue<MenuBool>();
+            var drawR = drawingMenu["DrawR"].GetValue<MenuBool>();
 
             if (drawQ)
             {
@@ -513,13 +496,13 @@ namespace Night_Stalker_Azir
             Player.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPosRaw);
 
             if (
-                !((Q.IsReady() ) && W.IsReady()
+                !((Q.IsReady()) && W.IsReady()
                   && (E.IsReady())))
             {
                 return;
             }
 
-            var option = Menu["FleeOption"].GetValue<MenuList>().Index;
+            var option = fleeMenu["FleeOption"].GetValue<MenuList>().Index;
 
             if (option == 0)
             {
@@ -564,9 +547,9 @@ namespace Night_Stalker_Azir
             R = new Spell(SpellSlot.R, 250);
             Flash = new Spell(Player.GetSpellSlot("summonerflash"), 425);
 
-            Q.SetSkillshot(7.5f / 30, 70, 1000, false,false, SkillshotType.Line);
+            Q.SetSkillshot(7.5f / 30, 70, 1000, false, false, SkillshotType.Line);
             W.Delay = 0.25f;
-            E.SetSkillshot(7.5f / 30, 100, 2000, true,false, SkillshotType.Line);
+            E.SetSkillshot(7.5f / 30, 100, 2000, true, false, SkillshotType.Line);
 
             CreateMenu();
 
@@ -606,17 +589,17 @@ namespace Night_Stalker_Azir
                     break;
             }
 
-            if (Menu["HarassToggle"].GetValue<MenuBool>() && Orbwalker.ActiveMode != OrbwalkerMode.Harass)
+            if (harassMenu["HarassToggle"].GetValue<MenuKeyBind>().Active && Orbwalker.ActiveMode != OrbwalkerMode.Harass)
             {
                 DoHarass(true);
             }
 
-            if (Menu["InsecActive"].GetValue<MenuBool>())
+            if (insecMenu["InsecActive"].GetValue<MenuKeyBind>().Active)
             {
                 DoInsec();
             }
 
-            if (Menu["Flee"].GetValue<MenuBool>())
+            if (fleeMenu["Flee"].GetValue<MenuKeyBind>().Active)
             {
                 Flee();
             }
@@ -636,7 +619,7 @@ namespace Night_Stalker_Azir
             Interrupter.InterruptSpellArgs args)
         {
             if (!sender.IsValidTarget(R.Range) || args.DangerLevel != Interrupter.DangerLevel.High
-                || args.EndTime - Environment.TickCount < 500 || !Menu["UseRInterrupt"].GetValue<MenuBool>())
+                || args.EndTime - Environment.TickCount < 500 || !miscMenu["UseRInterrupt"].GetValue<MenuBool>())
             {
                 return;
             }
@@ -649,8 +632,8 @@ namespace Night_Stalker_Azir
         /// </summary>
         private static void KillSteal()
         {
-            var useQ = Menu["UseQKS"].GetValue<MenuBool>();
-            var useR = Menu["UseRKS"].GetValue<MenuBool>();
+            var useQ = ksMenu["UseQKS"].GetValue<MenuBool>();
+            var useR = ksMenu["UseRKS"].GetValue<MenuBool>();
 
             if (useQ && (Q.IsReady() || Q.Instance.State == SpellState.Disabled))
             {
